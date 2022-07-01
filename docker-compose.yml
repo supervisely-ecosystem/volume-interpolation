@@ -1,0 +1,14 @@
+version: '2.4'
+services:
+  app:
+    image: sly_slicer3d
+    command: /home/sliceruser/Slicer/Slicer --python-script '/app/src/main.py' --no-splash --no-main-window
+    build: .
+    env_file: secret_debug.env
+    ports:
+    - "8888:8888"
+    - "49053:49053"
+    volumes:
+    - ./src:/app/src
+    - ./input:/app/input
+    - ./output:/app/output

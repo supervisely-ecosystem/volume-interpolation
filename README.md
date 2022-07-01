@@ -1,10 +1,9 @@
 
-[comment]: <> (<img src="" style="width: 100%;"/>)
+# volume-interpolation
 
-# Applications V2 Templates
+run from terminal:
 
-1. Create repository using that template **including all branches**
-2. Checkout to branch based on your purposes:  
-    * [singlepage](https://github.com/supervisely-ecosystem/appV2-templates/tree/singlepage) — Singlepage Application with GUI   
-    * [headless](https://github.com/supervisely-ecosystem/appV2-templates/tree/headless) — Headless Application without GUI
+```shell
+docker-compose run --rm app
+```
     
