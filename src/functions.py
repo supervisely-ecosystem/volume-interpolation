@@ -117,6 +117,7 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 
 def fill_between_slices(volume_path, mask_path):
+    sly.logger("start interpolation")
     masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})
     segmentationNode = slicer.util.loadSegmentation(mask_path)
 
@@ -142,3 +143,7 @@ def fill_between_slices(volume_path, mask_path):
 
     output_path = f"/app/output/{get_file_name_with_ext(mask_path)}"
     slicer.util.exportNode(segmentationNode, output_path)
+
+
+# 1) check 1 object 3 figs +++
+# 2) check 1 object different axes different slices ---
