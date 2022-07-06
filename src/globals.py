@@ -15,13 +15,16 @@ sys.path.append(os.path.join(app_root_directory, "src"))
 logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
 # order matters
-from dotenv import load_dotenv
-load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
-load_dotenv(os.path.join(app_root_directory, "debug.env"))
+# from dotenv import load_dotenv
+# load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
+# load_dotenv(os.path.join(app_root_directory, "debug.env"))
+
 
 
 app = AppService()
 api = sly.Api.from_env()
+
+
 
 TASK_ID = int(os.environ["TASK_ID"])
 TEAM_ID = int(os.environ["context.teamId"])
