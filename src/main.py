@@ -23,22 +23,16 @@ def send_error_data(func):
     return wrapper
 
 
-@g.app.callback("interpolation")
+@g.app.callback("interpolate")
 @sly.timeit
 @send_error_data
 def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
-    print("-------")
-    print(state)
-    print("-------")
-
     logger.info("Download volume")
-
     volume_path, volume_annotation = f.download_volume(
         volume_id=state["volumeId"], input_dir=g.INPUT_DIR
     )
 
     logger.info("Start interpolation")
-
     stl_mesh = f.draw_annotation(
         volume_path=volume_path,
         volume_annotation=volume_annotation,
@@ -49,7 +43,6 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
     )
 
     logger.info("Send response")
-
     g.app.send_response(
         request_id=context["request_id"],
         data={
@@ -69,9 +62,10 @@ def main():
         },
     )
 
+    print(g.app.agent_token)
+    print(g.app.server_address)
     g.app.run()
 
 
 if __name__ == "__main__":
     sly.main_wrapper("main", main)
-

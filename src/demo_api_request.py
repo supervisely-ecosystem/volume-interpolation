@@ -26,7 +26,7 @@ def main():
     context = {"volumeId": volume_id, "objectId": object_id}
     # data={"volumeId": volume_id, "objectId": object_id}
 
-    response = api.task.send_request(task_id, "interpolation", data={}, context=context, timeout=60)
+    response = api.task.send_request(task_id, "interpolate", data={}, context=context, timeout=60)
     print("APP returns data:")
     print(response)
 
