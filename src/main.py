@@ -62,8 +62,6 @@ def main():
         },
     )
 
-    print(g.app.agent_token)
-    print(g.app.server_address)
     g.app.run()
 
 
