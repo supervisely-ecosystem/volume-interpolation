@@ -8,6 +8,7 @@
     ],
     "description": "Slicer 3D algorithms for volume interpolation",
     "docker_image": "supervisely/3dslicer:1.0.1",
+    "entrypoint": "supervisely/agent:dev ",
     "main_script": "src/main.py",
     "task_location": "application_sessions",
     "icon_background": "#FFFFFF",
