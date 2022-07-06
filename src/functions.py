@@ -1,12 +1,14 @@
 import os
 import nrrd
-from stl import mesh
 import globals as g
 import numpy as np
 import supervisely as sly
 from supervisely.io.fs import mkdir
 
 import slicer
+
+from stl import mesh
+from pathlib import Path
 
 
 def segment_object(vol_seg_mask_shape, volume_annotation, volume_object, key_id_map):
@@ -154,14 +156,18 @@ def fill_between_slices(volume_path, mask_path, output_dir):
                                                                                               segmentationNode, None,
                                                                                               "STL")
     output_mesh_filename = os.listdir(output_dir)[0]
-    stl_mesh = mesh.Mesh.from_file(os.path.join(output_dir, output_mesh_filename))
+    output_mesh_path = os.path.join(output_dir, output_mesh_filename)
+    # stl_mesh = mesh.Mesh.from_file(output_mesh_path)
+    # stl_mesh = Path(output_mesh_path).read_bytes()
+    stl_mesh = open(output_mesh_path, 'rb').read()
     return stl_mesh
 
 
 def download_volume(volume_id, input_dir):
     volume_info = g.api.volume.get_info_by_id(id=volume_id)
     volume_path = os.path.join(input_dir, volume_info.name)
-    g.api.volume.download_path(id=volume_id, path=volume_path, progress_cb=None)
+    if not os.path.exists(volume_path):
+        g.api.volume.download_path(id=volume_id, path=volume_path, progress_cb=None)
     volume_annotation_json = g.api.volume.annotation.download(volume_id=volume_id)
     volume_annotation = sly.VolumeAnnotation.from_json(
         data=volume_annotation_json, project_meta=g.project_meta, key_id_map=g.KEY_ID_MAP
