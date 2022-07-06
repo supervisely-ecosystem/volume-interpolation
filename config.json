@@ -1,0 +1,22 @@
+{
+    "name": "Volume Interpolation",
+    "type": "app",
+    "categories": [
+      "dicom",
+      "volumes",
+      "interpolation"
+    ],
+    "description": "Slicer 3D algorithms for volume interpolation",
+    "docker_image": "supervisely/3dslicer:1.0.1",
+    "main_script": "src/main.py",
+    "task_location": "application_sessions",
+    "icon_background": "#FFFFFF",
+    "icon": "",
+    "icon_cover": true,
+    "headless": true,
+    "instance_version": "6.4.57",
+    "session_tags": [
+      "sly_interpolation"
+    ],
+    "poster": ""
+  }
