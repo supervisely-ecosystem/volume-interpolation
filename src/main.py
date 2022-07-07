@@ -1,8 +1,10 @@
+import functools
+
 import supervisely as sly
 from supervisely.sly_logger import logger
-import functools
-import globals as g
+
 import functions as f
+import globals as g
 
 
 def send_error_data(func):
@@ -42,11 +44,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
     logger.info("Start response")
     g.app.send_response(
         request_id=context["request_id"],
-        data={
-            "interpolatedStl": stl_mesh,
-            "success": True,
-            "error": None,
-        },
+        data={"interpolatedStl": stl_mesh, "success": True, "error": None},
     )
     logger.info("Finish response")
 
@@ -54,10 +52,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
 def main():
     sly.logger.info(
         "Script arguments",
-        extra={
-            "context.teamId": g.TEAM_ID,
-            "context.workspaceId": g.WORKSPACE_ID,
-        },
+        extra={"context.teamId": g.TEAM_ID, "context.workspaceId": g.WORKSPACE_ID},
     )
 
     g.app.run()

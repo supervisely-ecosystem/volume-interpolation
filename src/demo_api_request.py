@@ -1,8 +1,9 @@
 import os
 import sys
 from pathlib import Path
-from supervisely.sly_logger import logger
+
 import supervisely_lib as sly
+from supervisely.sly_logger import logger
 
 
 def main():
@@ -13,19 +14,19 @@ def main():
     logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
     # order matters
-    from dotenv import load_dotenv
-    load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
-    load_dotenv(os.path.join(app_root_directory, "debug.env"))
+    # from dotenv import load_dotenv
+    # load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
+    # load_dotenv(os.path.join(app_root_directory, "debug.env"))
 
     api = sly.Api.from_env()
     task_id = int(os.environ["TASK_ID"])
     volume_id = int(os.environ["modal.state.volumeId"])
     object_id = int(os.environ["modal.state.objectId"])
 
-    # context = {"volumeId": volume_id, "objectId": object_id}
     data = {"volumeId": volume_id, "objectId": object_id}
-
-    response = api.task.send_request(task_id, "interpolate", data=data, context={}, timeout=60)
+    response = api.task.send_request(
+        task_id, "interpolate", data=data, context={}, timeout=60
+    )
     print("APP returns data:")
     print(response)
 

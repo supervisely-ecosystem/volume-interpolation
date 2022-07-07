@@ -1,17 +1,15 @@
 import io
 import os
-import sys
+
 import nrrd
-import globals as g
 import numpy as np
 import supervisely as sly
-from supervisely.io.fs import mkdir, silent_remove
+from supervisely.io.fs import silent_remove
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
 
+import globals as g
 import slicer
-
-from stl import mesh, Mode
-from pathlib import Path
+from stl import Mode, mesh
 
 
 def segment_object(vol_seg_mask_shape, volume_annotation, volume_object, key_id_map):
@@ -147,9 +145,9 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     effect.self().onApply()
 
     segmentationNode.CreateClosedSurfaceRepresentation()
-    slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(output_dir,
-                                                                                              segmentationNode, None,
-                                                                                              "STL")
+    slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(
+        output_dir, segmentationNode, None, "STL"
+    )
 
     output_mesh_filename = os.listdir(output_dir)[0]
     output_mesh_path = os.path.join(output_dir, output_mesh_filename)
@@ -175,7 +173,9 @@ def download_volume(volume_id, input_dir):
     return volume_path, volume_annotation, key_id_map
 
 
-def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map):
+def draw_annotation(
+        volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map
+):
     nrrd_header = nrrd.read_header(volume_path)
     for v_object in volume_annotation.objects:
         if key_id_map.get_object_id(v_object._key) != object_id:
@@ -187,11 +187,6 @@ def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output
             nrrd_header["sizes"], volume_annotation, v_object, key_id_map
         )
         save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
-        return fill_between_slices(volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir)
-
-
-def shutdown_app():
-    try:
-        sly.app.fastapi.shutdown()
-    except KeyboardInterrupt:
-        sly.logger.info("Application shutdown successfully")
+        return fill_between_slices(
+            volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
+        )
