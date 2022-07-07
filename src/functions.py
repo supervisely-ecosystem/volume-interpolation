@@ -1,3 +1,4 @@
+import io
 import os
 import nrrd
 import globals as g
@@ -7,7 +8,7 @@ from supervisely.io.fs import mkdir
 
 import slicer
 
-from stl import mesh
+from stl import mesh, Mode
 from pathlib import Path
 
 
@@ -159,7 +160,17 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     output_mesh_path = os.path.join(output_dir, output_mesh_filename)
     # stl_mesh = mesh.Mesh.from_file(output_mesh_path)
     # stl_mesh = Path(output_mesh_path).read_bytes()
-    stl_mesh = open(output_mesh_path, 'rb').read()
+    # stl_mesh = open(output_mesh_path, 'rb').read()
+
+    stl_mesh = mesh.Mesh.from_file(output_mesh_path)
+    stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
+    stl_mesh = io.open(output_mesh_path, mode="r", encoding="utf-8").read()
+
+    print("---------")
+    print(type(stl_mesh))
+    print(stl_mesh)
+    print("---------")
+
     return stl_mesh
 
 

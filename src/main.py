@@ -42,6 +42,11 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
         key_id_map=g.KEY_ID_MAP,
     )
 
+    print("---------")
+    print(type(stl_mesh))
+    print(stl_mesh)
+    print("---------")
+
     logger.info("Send response")
     g.app.send_response(
         request_id=context["request_id"],
