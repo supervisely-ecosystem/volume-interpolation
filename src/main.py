@@ -27,40 +27,18 @@ def send_error_data(func):
 @sly.timeit
 @send_error_data
 def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
-    logger.info("Download volume")
-    sly.logger.info("Download volume")
-    app_logger.info("Download volume")
-    print("Download volume")
-
-    volume_path, volume_annotation = f.download_volume(
+    volume_path, volume_annotation, key_id_map = f.download_volume(
         volume_id=state["volumeId"], input_dir=g.INPUT_DIR
     )
-    logger.info("Volume: CTCHEST.nrrd has been successfully downloaded")
-    app_logger.info("Volume: CTCHEST.nrrd has been successfully downloaded")
-    print("Volume: CTCHEST.nrrd has been successfully downloaded")
-    sly.logger.info("Volume: CTCHEST.nrrd has been successfully downloaded")
-
-
-
-    logger.info("Start interpolation")
-    sly.logger.info("Start interpolation")
-    app_logger.info("Start interpolation")
-    print("Start interpolation")
     stl_mesh = f.draw_annotation(
         volume_path=volume_path,
         volume_annotation=volume_annotation,
         object_id=state["objectId"],
         input_dir=g.INPUT_DIR,
         output_dir=g.OUTPUT_DIR,
-        key_id_map=g.KEY_ID_MAP,
+        key_id_map=key_id_map,
     )
 
-    print("---------")
-    print(type(stl_mesh))
-    print(stl_mesh)
-    print("---------")
-
-    logger.info("Send response")
     g.app.send_response(
         request_id=context["request_id"],
         data={
@@ -69,6 +47,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
             "error": None,
         },
     )
+    logger.info("Finish response")
 
 
 def main():

@@ -1,10 +1,12 @@
 version: '2.4'
 services:
   app:
-    image: sly_slicer3d
+    image: supervisely/3dslicer:1.0.2
     command: /home/sliceruser/Slicer/Slicer --python-script '/app/src/main.py' --no-splash --no-main-window
     build: .
     env_file: secret_debug.env
+    environment:
+    - "PYTHONUNBUFFERED=1"
     ports:
     - "8888:8888"
     - "49053:49053"
@@ -12,3 +14,6 @@ services:
     - ./src:/app/src
     - ./input:/app/input
     - ./output:/app/output
+    - ./debug.env:/app/debug.env
+    - ./secret_debug.env:/app/secret_debug.env
+    - ./logs:/app/logs
