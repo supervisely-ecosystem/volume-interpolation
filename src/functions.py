@@ -125,9 +125,6 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 
 def fill_between_slices(volume_path, mask_path, output_dir):
-    if not os.path.exists(output_dir):
-        mkdir(output_dir, True)
-
     masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})
     segmentationNode = slicer.util.loadSegmentation(mask_path)
 
