@@ -27,8 +27,9 @@ TEAM_ID = int(os.environ["context.teamId"])
 WORKSPACE_ID = int(os.environ["context.workspaceId"])
 PROJECT_ID = int(os.environ["context.projectId"])
 
-INPUT_DIR = os.path.join(app_root_directory, "input")
-OUTPUT_DIR = os.path.join(app_root_directory, "output")
+STORAGE_DIR = "/home/sliceruser"
+INPUT_DIR = os.path.join(STORAGE_DIR, "input")
+OUTPUT_DIR = os.path.join(STORAGE_DIR, "output")
 
 project = api.project.get_info_by_id(PROJECT_ID)
 project_meta = sly.ProjectMeta.from_json(api.project.get_meta(PROJECT_ID))
