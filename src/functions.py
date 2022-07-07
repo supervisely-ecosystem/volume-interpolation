@@ -151,14 +151,8 @@ def fill_between_slices(volume_path, mask_path, output_dir):
                                                                                               segmentationNode, None,
                                                                                               "STL")
 
-    sly.logger.info("Finish interpolation")
-
-    sly.logger.info("Process output")
-
     output_mesh_filename = os.listdir(output_dir)[0]
     output_mesh_path = os.path.join(output_dir, output_mesh_filename)
-
-    sly.logger.info(output_mesh_filename)
 
     stl_mesh = mesh.Mesh.from_file(output_mesh_path)
     stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
