@@ -28,11 +28,21 @@ def send_error_data(func):
 @send_error_data
 def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
     logger.info("Download volume")
+    app_logger.info("Download volume")
+    print("Download volume")
+
     volume_path, volume_annotation = f.download_volume(
         volume_id=state["volumeId"], input_dir=g.INPUT_DIR
     )
+    logger.info("Volume: CTCHEST.nrrd has been successfully downloaded")
+    app_logger.info("Volume: CTCHEST.nrrd has been successfully downloaded")
+    print("Volume: CTCHEST.nrrd has been successfully downloaded")
+
+
 
     logger.info("Start interpolation")
+    app_logger.info("Start interpolation")
+    print("Start interpolation")
     stl_mesh = f.draw_annotation(
         volume_path=volume_path,
         volume_annotation=volume_annotation,
