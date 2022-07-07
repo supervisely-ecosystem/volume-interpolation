@@ -4,7 +4,7 @@ import os
 import nrrd
 import numpy as np
 import supervisely as sly
-from supervisely.io.fs import silent_remove
+from supervisely.io.fs import silent_remove, get_file_name_with_ext
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
 
 import globals as g
@@ -123,6 +123,7 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 
 def fill_between_slices(volume_path, mask_path, output_dir):
+    sly.logger.info(f"Start interpolation for {mask_path}")
     masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})
     segmentationNode = slicer.util.loadSegmentation(mask_path)
 
@@ -155,6 +156,7 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     stl_mesh = mesh.Mesh.from_file(output_mesh_path)
     stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
     stl_mesh = io.open(output_mesh_path, mode="r", encoding="utf-8").read()
+    sly.logger.info(f"Interpolation done: {output_mesh_filename}")
     silent_remove(output_mesh_path)
 
     return stl_mesh
@@ -165,6 +167,7 @@ def download_volume(volume_id, input_dir):
     volume_info = g.api.volume.get_info_by_id(id=volume_id)
     volume_path = os.path.join(input_dir, volume_info.name)
     if not os.path.exists(volume_path):
+        sly.logger.info(f"Downloading volume {get_file_name_with_ext(volume_path)}")
         g.api.volume.download_path(id=volume_id, path=volume_path, progress_cb=None)
     volume_annotation_json = g.api.volume.annotation.download(volume_id=volume_id)
     volume_annotation = sly.VolumeAnnotation.from_json(
@@ -177,6 +180,7 @@ def draw_annotation(
         volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map
 ):
     nrrd_header = nrrd.read_header(volume_path)
+    sly.logger.info("Draw mask from annotation")
     for v_object in volume_annotation.objects:
         if key_id_map.get_object_id(v_object._key) != object_id:
             continue
@@ -187,6 +191,7 @@ def draw_annotation(
             nrrd_header["sizes"], volume_annotation, v_object, key_id_map
         )
         save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
+        sly.logger.info(f"{output_file_name} has been successfully saved.")
         return fill_between_slices(
             volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
         )
