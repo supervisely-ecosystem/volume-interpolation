@@ -30,8 +30,5 @@ PROJECT_ID = int(os.environ["context.projectId"])
 INPUT_DIR = os.path.join(app_root_directory, "input")
 OUTPUT_DIR = os.path.join(app_root_directory, "output")
 
-mkdir(INPUT_DIR, True)
-mkdir(OUTPUT_DIR, True)
-
 project = api.project.get_info_by_id(PROJECT_ID)
 project_meta = sly.ProjectMeta.from_json(api.project.get_meta(PROJECT_ID))
