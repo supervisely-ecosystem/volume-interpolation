@@ -14,9 +14,9 @@ sys.path.append(os.path.join(app_root_directory, "src"))
 logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
 # order matters
-from dotenv import load_dotenv
-load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
-load_dotenv(os.path.join(app_root_directory, "debug.env"))
+# from dotenv import load_dotenv
+# load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
+# load_dotenv(os.path.join(app_root_directory, "debug.env"))
 
 app = AppService()
 api = sly.Api.from_env()
@@ -30,8 +30,8 @@ STORAGE_DIR = "/home/sliceruser"
 INPUT_DIR = os.path.join(STORAGE_DIR, "input")
 OUTPUT_DIR = os.path.join(STORAGE_DIR, "output")
 
+# APP_LOG_DIR = os.path.join(app_root_directory, "log")
+
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
-
-project = api.project.get_info_by_id(PROJECT_ID)
-project_meta = sly.ProjectMeta.from_json(api.project.get_meta(PROJECT_ID))
+# mkdir(APP_LOG_DIR, True)
