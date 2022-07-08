@@ -59,6 +59,7 @@ def main():
     )
 
     add_default_logging_into_file(logger, log_dir=g.app_root_directory)
+    logger.info("🟩 App has been successfully deployed")
     g.app.run()
 
 
