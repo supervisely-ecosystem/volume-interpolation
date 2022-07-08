@@ -27,15 +27,15 @@
 
 Volume interpolation app implements `fill between slices` algorithm from [Slicer 3D](https://www.slicer.org/) to Supervisely. This method will fill the skipped slices by interpolating between segmented slices (you can skip any number of slices between segmented slices) and create complete segmentation for selected object.
 
-<p float="left">
-  <img src="" style="width:80%;"/>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/48913536/178044045-9d785179-5b72-4b84-9bdb-00f16478e5af.gif" style="width:80%;"/>
 </p>    
 
 # How To Run
 
 ### ⚠️ Notice  
- * The application may already be launched by the instance administrator (**Enterprise**) or the Supervisely team (**Community**). If the app is not available in dropdown menu in Labeling tool, please contact us. If the Smart Tool responds slowly, please run additional application sessions in your team.
- * **Enterprise only**: You can share started application with all users on your instance using **share** button in front of running session. We recommend to run multiple sessions if large number of users are using Smart Tool simultaneously.
+ * The application may already be launched by the instance administrator (**Enterprise**) or the Supervisely team (**Community**). If the app is not available in dropdown interpolator menu in Labeling tool, please contact us. If the app responds slowly, please run additional application sessions in your team.
+ * **Enterprise only**: You can share started application with all users on your instance using **share** button in front of running session. We recommend to run multiple sessions if large number of users are using app simultaneously.
 
 ---
 
@@ -68,6 +68,7 @@ Volume interpolation app implements `fill between slices` algorithm from [Slicer
 
 <img src="https://user-images.githubusercontent.com/48913536/178040004-e38d9422-a799-474a-8892-b5780c2c2f34.png"/>
 
+<img src="https://user-images.githubusercontent.com/48913536/178044073-0ddfa65a-5451-4252-8457-5c00c7e2c203.gif"/>
 # Acknowledgment
 
 This app is based on the great work by `Slicer 3D` team [github](https://github.com/Slicer/Slicer)). ![GitHub Org's stars](https://img.shields.io/github/stars/Slicer/Slicer?style=social)
