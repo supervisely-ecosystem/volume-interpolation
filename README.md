@@ -69,6 +69,7 @@ Volume interpolation app implements `fill between slices` algorithm from [Slicer
 <img src="https://user-images.githubusercontent.com/48913536/178040004-e38d9422-a799-474a-8892-b5780c2c2f34.png"/>
 
 <img src="https://user-images.githubusercontent.com/48913536/178044073-0ddfa65a-5451-4252-8457-5c00c7e2c203.gif"/>
+
 # Acknowledgment
 
 This app is based on the great work by `Slicer 3D` team [github](https://github.com/Slicer/Slicer)). ![GitHub Org's stars](https://img.shields.io/github/stars/Slicer/Slicer?style=social)
