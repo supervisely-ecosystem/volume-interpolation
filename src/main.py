@@ -31,7 +31,7 @@ def send_error_data(func):
 def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
     volume_path, volume_annotation, key_id_map = f.download_volume(
         api=api,
-        project_id=g.PROJECT_ID,
+        project_id=context["projectId"],
         volume_id=state["volumeId"],
         input_dir=g.INPUT_DIR,
     )

@@ -24,14 +24,11 @@ api = sly.Api.from_env()
 TASK_ID = int(os.environ["TASK_ID"])
 TEAM_ID = int(os.environ["context.teamId"])
 WORKSPACE_ID = int(os.environ["context.workspaceId"])
-PROJECT_ID = int(os.environ["context.projectId"])
+# PROJECT_ID = int(os.environ["context.projectId"])
 
 STORAGE_DIR = "/home/sliceruser"
 INPUT_DIR = os.path.join(STORAGE_DIR, "input")
 OUTPUT_DIR = os.path.join(STORAGE_DIR, "output")
 
-# APP_LOG_DIR = os.path.join(app_root_directory, "log")
-
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
-# mkdir(APP_LOG_DIR, True)
