@@ -24,7 +24,6 @@ api = sly.Api.from_env()
 TASK_ID = int(os.environ["TASK_ID"])
 TEAM_ID = int(os.environ["context.teamId"])
 WORKSPACE_ID = int(os.environ["context.workspaceId"])
-# PROJECT_ID = int(os.environ["context.projectId"])
 
 STORAGE_DIR = "/home/sliceruser"
 INPUT_DIR = os.path.join(STORAGE_DIR, "input")
