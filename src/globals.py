@@ -32,6 +32,3 @@ OUTPUT_DIR = os.path.join(STORAGE_DIR, "output")
 
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
-
-project = api.project.get_info_by_id(PROJECT_ID)
-project_meta = sly.ProjectMeta.from_json(api.project.get_meta(PROJECT_ID))
