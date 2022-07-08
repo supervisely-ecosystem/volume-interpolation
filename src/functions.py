@@ -1,11 +1,15 @@
+import io
 import os
 import nrrd
 from stl import mesh
 import globals as g
 import numpy as np
 import supervisely as sly
-from supervisely.io.fs import mkdir
+from stl import Mode, mesh
+from supervisely.io.fs import get_file_name_with_ext, silent_remove
+from supervisely.volume_annotation.volume_annotation import KeyIdMap
 
+import globals as g
 import slicer
 
 
@@ -120,13 +124,9 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 
 def fill_between_slices(volume_path, mask_path, output_dir):
-    if not os.path.exists(output_dir):
-        mkdir(output_dir, True)
-
-    masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})  
+    sly.logger.info(f"Start interpolation for {mask_path}")
+    masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})
     segmentationNode = slicer.util.loadSegmentation(mask_path)
-
-    # slicer.util.exportNode(loadedVolumeNode, "/app/input/MRHead.nrrd")
 
     # Create segment editor to get access to effects
     segmentEditorWidget = slicer.qMRMLSegmentEditorWidget()
@@ -146,31 +146,43 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     effect.self().onPreview()
     effect.self().onApply()
 
-    # output_path = f"/app/output/{get_file_name_with_ext(mask_path)}"
-    # slicer.util.exportNode(segmentationNode, output_path) # export to .nrrd
-
     segmentationNode.CreateClosedSurfaceRepresentation()
-    slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(output_dir,
-                                                                                              segmentationNode, None,
-                                                                                              "STL")
+    slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(
+        output_dir, segmentationNode, None, "STL"
+    )
+
     output_mesh_filename = os.listdir(output_dir)[0]
-    stl_mesh = mesh.Mesh.from_file(os.path.join(output_dir, output_mesh_filename))
+    output_mesh_path = os.path.join(output_dir, output_mesh_filename)
+
+    stl_mesh = mesh.Mesh.from_file(output_mesh_path)
+    stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
+    stl_mesh = io.open(output_mesh_path, mode="r", encoding="utf-8").read()
+    sly.logger.info(f"Interpolation done: {output_mesh_filename}")
+    silent_remove(output_mesh_path)
+
     return stl_mesh
 
 
-def download_volume(volume_id, input_dir):
-    volume_info = g.api.volume.get_info_by_id(id=volume_id)
+def download_volume(api, project_id, volume_id, input_dir):
+    project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
+    key_id_map = KeyIdMap()
+    volume_info = api.volume.get_info_by_id(id=volume_id)
     volume_path = os.path.join(input_dir, volume_info.name)
-    g.api.volume.download_path(id=volume_id, path=volume_path, progress_cb=None)
-    volume_annotation_json = g.api.volume.annotation.download(volume_id=volume_id)
+    if not os.path.exists(volume_path):
+        sly.logger.info(f"Downloading volume {get_file_name_with_ext(volume_path)}")
+        api.volume.download_path(id=volume_id, path=volume_path, progress_cb=None)
+    volume_annotation_json = api.volume.annotation.download(volume_id=volume_id)
     volume_annotation = sly.VolumeAnnotation.from_json(
-        data=volume_annotation_json, project_meta=g.project_meta, key_id_map=g.KEY_ID_MAP
+        data=volume_annotation_json, project_meta=project_meta, key_id_map=key_id_map
     )
-    return volume_path, volume_annotation
+    return volume_path, volume_annotation, key_id_map
 
 
-def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map):
+def draw_annotation(
+        volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map
+):
     nrrd_header = nrrd.read_header(volume_path)
+    sly.logger.info("Draw mask from annotation")
     for v_object in volume_annotation.objects:
         if key_id_map.get_object_id(v_object._key) != object_id:
             continue
@@ -181,10 +193,7 @@ def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output
             nrrd_header["sizes"], volume_annotation, v_object, key_id_map
         )
         save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
-        fill_between_slices(volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir)
-
-def shutdown_app():
-    try:
-        sly.app.fastapi.shutdown()
-    except KeyboardInterrupt:
-        sly.logger.info("Application shutdown successfully")
+        sly.logger.info(f"{output_file_name} has been successfully saved.")
+        return fill_between_slices(
+            volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
+        )
