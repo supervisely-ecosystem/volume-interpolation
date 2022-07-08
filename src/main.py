@@ -1,7 +1,7 @@
 import functools
 
 import supervisely as sly
-from supervisely.sly_logger import logger
+from supervisely.sly_logger import add_default_logging_into_file, logger
 
 import functions as f
 import globals as g
@@ -29,10 +29,11 @@ def send_error_data(func):
 @sly.timeit
 @send_error_data
 def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
-    logger.info("APP STARTED")
-    print("APP STARTED")
     volume_path, volume_annotation, key_id_map = f.download_volume(
-        api=api, project_id=g.PROJECT_ID, volume_id=state["volumeId"], input_dir=g.INPUT_DIR
+        api=api,
+        project_id=g.PROJECT_ID,
+        volume_id=state["volumeId"],
+        input_dir=g.INPUT_DIR,
     )
     stl_mesh = f.draw_annotation(
         volume_path=volume_path,
@@ -44,22 +45,6 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
     )
 
     logger.info("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-    print("Start response")
-
     g.app.send_response(
         request_id=context["request_id"],
         data={"interpolatedStl": stl_mesh, "success": True, "error": None},
@@ -73,6 +58,7 @@ def main():
         extra={"context.teamId": g.TEAM_ID, "context.workspaceId": g.WORKSPACE_ID},
     )
 
+    add_default_logging_into_file(logger, log_dir=g.app_root_directory)
     g.app.run()
 
 
