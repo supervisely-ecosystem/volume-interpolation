@@ -1,12 +1,15 @@
 <div align="center" markdown>
-<img src="">
+<img src="https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png">
 
 # Volume Interpolation
+
+
 
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#How-To-Run">How To Run</a> •
-  <a href="#How-To-Use">How To Use</a>
+  <a href="#How-To-Use">How To Use</a> •
+  <a href="#Acknowledgment">Acknowledgment</a>
 </p>
 
 
@@ -24,25 +27,47 @@
 
 Volume interpolation app implements `fill between slices` algorithm from [Slicer 3D](https://www.slicer.org/) to Supervisely. This method will fill the skipped slices by interpolating between segmented slices (you can skip any number of slices between segmented slices) and create complete segmentation for selected object.
 
-# How To Run 
+<p float="left">
+  <img src="" style="width:80%;"/>
+</p>    
 
-1. Run app from the ecosystem
+# How To Run
 
-<img src="https://user-images.githubusercontent.com/48913536/176165104-e8b38e55-fb9a-4843-8d7a-ac3760732ef9.png"/>
+### ⚠️ Notice  
+ * The application may already be launched by the instance administrator (**Enterprise**) or the Supervisely team (**Community**). If the app is not available in dropdown menu in Labeling tool, please contact us. If the Smart Tool responds slowly, please run additional application sessions in your team.
+ * **Enterprise only**: You can share started application with all users on your instance using **share** button in front of running session. We recommend to run multiple sessions if large number of users are using Smart Tool simultaneously.
 
-2. Define export settings in modal window and press the **Run** button
+---
+
+1. Run app from the ecosystem or **App sessions** page
+
+<img src="https://user-images.githubusercontent.com/48913536/178039979-fdbbac46-e92a-485a-be89-a8257555293d.png"/>
+
+2. Press the **Run** button in the modal window
 
 <div align="center" markdown>
-<img src="https://user-images.githubusercontent.com/48913536/176164020-a2e940ea-8da6-4dc7-a62e-903a8529f921.png" width="650"/>
+<img src="https://user-images.githubusercontent.com/48913536/178040333-94926f78-bef6-4a3f-8a56-d62d66cbfb62.png" width="650"/>
 </div>
 
-# How To Use 
+3. Wait for the app to deploy
 
-1. Wait for the app to process your data, once done, a link for download will become available
+<img src="https://user-images.githubusercontent.com/48913536/178039984-396e806e-4001-4a44-b8b0-d408aef8c9da.png"/>
 
-<img src="https://user-images.githubusercontent.com/48913536/176164021-5be40b84-842f-447f-93eb-99c5d9d1ab23.png"/>
+# How To Use
 
-2. Result archive will be available for download by link at `Tasks` page or from `Team Files` by the following path:
+1. Select segmented object
+2. Select interpolator (one time operation)
+3. Press `Interpolate` button
+4. Wait for the app to process slices, when interpolation is created, you will see it in figures of the selected object
 
-* `Team Files`->`Export pointclouds project in Supervisely format`->`<task_id>_<projectId>_<projectName>.tar`
-<img src="https://user-images.githubusercontent.com/48913536/176164028-3e535f5a-a31a-4b24-b55c-955e2fad0f2a.png"/>
+**Controls:**
+
+| Key                                                           | Description                               |
+| ------------------------------------------------------------- | ------------------------------------------|
+| <kbd>TBD</kbd>                                                | Apply interpolation                       |
+
+<img src="https://user-images.githubusercontent.com/48913536/178040004-e38d9422-a799-474a-8892-b5780c2c2f34.png"/>
+
+# Acknowledgment
+
+This app is based on the great work by `Slicer 3D` team [github](https://github.com/Slicer/Slicer)). ![GitHub Org's stars](https://img.shields.io/github/stars/Slicer/Slicer?style=social)
