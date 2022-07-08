@@ -7,6 +7,7 @@ from supervisely.app.v1.app_service import AppService
 from supervisely.io.fs import mkdir
 from supervisely.sly_logger import logger
 
+
 app_root_directory = str(Path(__file__).parent.absolute().parents[0])
 logger.info(f"App root directory: {app_root_directory}")
 sys.path.append(app_root_directory)

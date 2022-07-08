@@ -1,7 +1,8 @@
 import io
 import os
-
 import nrrd
+from stl import mesh
+import globals as g
 import numpy as np
 import supervisely as sly
 from stl import Mode, mesh
