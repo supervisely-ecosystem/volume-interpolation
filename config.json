@@ -3,8 +3,10 @@
     "type": "app",
     "categories": [
       "dicom",
-      "volumes",
       "interpolation"
+      "neural network",
+      "interactive segmentation",
+      "serve"
     ],
     "description": "Slicer 3D algorithms for volume interpolation",
     "docker_image": "supervisely/3dslicer:1.0.5",
