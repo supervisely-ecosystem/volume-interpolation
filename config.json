@@ -3,7 +3,7 @@
     "type": "app",
     "categories": [
       "dicom",
-      "interpolation"
+      "interpolation",
       "neural network",
       "interactive segmentation",
       "serve"
@@ -20,5 +20,6 @@
     "session_tags": [
       "sly_interpolation"
     ],
-    "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png"
+    "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
+    "community_agent": false
   }
