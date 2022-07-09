@@ -25,7 +25,7 @@
 
 # Overview
 
-Volume interpolation app implements `fill between slices` algorithm from [Slicer 3D](https://www.slicer.org/) to Supervisely. This method will fill the skipped slices by interpolating between segmented slices (you can skip any number of slices between segmented slices) and create complete segmentation for selected object.
+Volume interpolation app implements [`fill between slices`](https://slicer.readthedocs.io/en/latest/user_guide/modules/segmenteditor.html#fill-between-slices) algorithm from [Slicer 3D](https://www.slicer.org/) to Supervisely. This method will fill the skipped slices by interpolating between segmented slices (you can skip any number of slices between segmented slices) and create complete segmentation for selected object. As a result you will get both 3d mask (`nrrd`) and closed-surface mesh (`STL`).
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/48913536/178044045-9d785179-5b72-4b84-9bdb-00f16478e5af.gif" style="width:80%;"/>
@@ -34,7 +34,7 @@ Volume interpolation app implements `fill between slices` algorithm from [Slicer
 # How To Run
 
 ### ⚠️ Notice  
- * The application may already be launched by the instance administrator (**Enterprise**) or the Supervisely team (**Community**). If the app is not available in dropdown interpolator menu in Labeling tool, please contact us. If the app responds slowly, please run additional application sessions in your team.
+ * The application may already be launched by the instance administrator (**Enterprise**) or the Supervisely team (**Community**). If the app is not available in dropdown menu for selecting interpolation in DICOM volume labeling tool, please contact your instance administrator. If the app responds slowly, please run additional application sessions in your team.
  * **Enterprise only**: You can share started application with all users on your instance using **share** button in front of running session. We recommend to run multiple sessions if large number of users are using app simultaneously.
 
 ---
@@ -64,7 +64,7 @@ Volume interpolation app implements `fill between slices` algorithm from [Slicer
 
 | Key                                                           | Description                               |
 | ------------------------------------------------------------- | ------------------------------------------|
-| <kbd>TBD</kbd>                                                | Apply interpolation                       |
+| <kbd>Ctrl</kbd>+<kbd>I</kbd>                               | Apply interpolation                       |
 
 <img src="https://user-images.githubusercontent.com/48913536/178040004-e38d9422-a799-474a-8892-b5780c2c2f34.png"/>
 
