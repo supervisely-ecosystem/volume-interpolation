@@ -1,4 +1,4 @@
-supervisely==6.31.0
-supervisely[apps]==6.31.0
+supervisely==6.35.0
+supervisely[apps]==6.35.0
 numpy-stl==2.17.1
 scikit-video==1.1.11
