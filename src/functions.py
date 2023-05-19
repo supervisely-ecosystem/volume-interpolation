@@ -15,9 +15,7 @@ import slicer
 
 def segment_object(vol_seg_mask_shape, volume_annotation, volume_object, key_id_map):
     mask = np.zeros(vol_seg_mask_shape).astype(np.bool)
-    mask_2d = segment_2d(
-        volume_annotation, volume_object, key_id_map, vol_seg_mask_shape
-    )
+    mask_2d = segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
     mask = np.where(mask_2d != 0, mask_2d, mask)
     return mask
 
@@ -30,14 +28,17 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
             vol_slice_id = vol_slice.index
             for figure in vol_slice.figures:
                 figure_vobj_key = key_id_map.get_object_id(figure.volume_object._key)
+                sly.logger.info(f"Geometry type: {figure.volume_object.obj_class.geometry_type}")
                 if figure_vobj_key != volume_object_key:
                     continue
-                if figure.volume_object.obj_class.geometry_type != sly.Bitmap:
+                if figure.volume_object.obj_class.geometry_type not in (sly.Bitmap, sly.Mask3D):
                     figure = convert_to_bitmap(figure)
                 try:
                     slice_geometry = figure.geometry
                     slice_bitmap = slice_geometry.data.astype(mask.dtype)
+                    sly.logger.info(f"slice_bitmap: {slice_bitmap}")
                     bitmap_origin = slice_geometry.origin
+                    sly.logger.info(f"bitmap_origin: {bitmap_origin}")
 
                     slice_bitmap = np.fliplr(slice_bitmap)
                     slice_bitmap = np.rot90(slice_bitmap, 1)
@@ -45,6 +46,7 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
                     mask = draw_figure_on_slice(
                         mask, plane, vol_slice_id, slice_bitmap, bitmap_origin
                     )
+                    sly.logger.info(f"mask: {mask}")
                 except Exception as e:
                     sly.logger.warn(
                         f"Skipped {plane} slice: {vol_slice_id} due to error: '{e}'",
@@ -60,41 +62,41 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
 def draw_figure_on_slice(mask, plane, vol_slice_id, slice_bitmap, bitmap_origin):
     if plane == "plane_sagittal":
         cur_bitmap = mask[
-                     vol_slice_id,
-                     bitmap_origin.col: bitmap_origin.col + slice_bitmap.shape[0],
-                     bitmap_origin.row: bitmap_origin.row + slice_bitmap.shape[1],
-                     ]
+            vol_slice_id,
+            bitmap_origin.col : bitmap_origin.col + slice_bitmap.shape[0],
+            bitmap_origin.row : bitmap_origin.row + slice_bitmap.shape[1],
+        ]
         cur_bitmap = np.where(slice_bitmap != 0, slice_bitmap, cur_bitmap)
         mask[
-        vol_slice_id,
-        bitmap_origin.col: bitmap_origin.col + slice_bitmap.shape[0],
-        bitmap_origin.row: bitmap_origin.row + slice_bitmap.shape[1],
+            vol_slice_id,
+            bitmap_origin.col : bitmap_origin.col + slice_bitmap.shape[0],
+            bitmap_origin.row : bitmap_origin.row + slice_bitmap.shape[1],
         ] = cur_bitmap
 
     elif plane == "plane_coronal":
         cur_bitmap = mask[
-                     bitmap_origin.col: bitmap_origin.col + slice_bitmap.shape[0],
-                     vol_slice_id,
-                     bitmap_origin.row: bitmap_origin.row + slice_bitmap.shape[1],
-                     ]
+            bitmap_origin.col : bitmap_origin.col + slice_bitmap.shape[0],
+            vol_slice_id,
+            bitmap_origin.row : bitmap_origin.row + slice_bitmap.shape[1],
+        ]
         cur_bitmap = np.where(slice_bitmap != 0, slice_bitmap, cur_bitmap)
         mask[
-        bitmap_origin.col: bitmap_origin.col + slice_bitmap.shape[0],
-        vol_slice_id,
-        bitmap_origin.row: bitmap_origin.row + slice_bitmap.shape[1],
+            bitmap_origin.col : bitmap_origin.col + slice_bitmap.shape[0],
+            vol_slice_id,
+            bitmap_origin.row : bitmap_origin.row + slice_bitmap.shape[1],
         ] = cur_bitmap
 
     elif plane == "plane_axial":
         cur_bitmap = mask[
-                     bitmap_origin.col: bitmap_origin.col + slice_bitmap.shape[0],
-                     bitmap_origin.row: bitmap_origin.row + slice_bitmap.shape[1],
-                     vol_slice_id,
-                     ]
+            bitmap_origin.col : bitmap_origin.col + slice_bitmap.shape[0],
+            bitmap_origin.row : bitmap_origin.row + slice_bitmap.shape[1],
+            vol_slice_id,
+        ]
         cur_bitmap = np.where(slice_bitmap != 0, slice_bitmap, cur_bitmap)
         mask[
-        bitmap_origin.col: bitmap_origin.col + slice_bitmap.shape[0],
-        bitmap_origin.row: bitmap_origin.row + slice_bitmap.shape[1],
-        vol_slice_id,
+            bitmap_origin.col : bitmap_origin.col + slice_bitmap.shape[0],
+            bitmap_origin.row : bitmap_origin.row + slice_bitmap.shape[1],
+            vol_slice_id,
         ] = cur_bitmap
 
     return mask
@@ -178,9 +180,7 @@ def download_volume(api, project_id, volume_id, input_dir):
     return volume_path, volume_annotation, key_id_map
 
 
-def draw_annotation(
-        volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map
-):
+def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map):
     nrrd_header = nrrd.read_header(volume_path)
     sly.logger.info("Draw mask from annotation")
     for v_object in volume_annotation.objects:
