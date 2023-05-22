@@ -8,6 +8,7 @@ import supervisely as sly
 from stl import Mode, mesh
 from supervisely.io.fs import get_file_name_with_ext, silent_remove
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
+from supervisely import Mask3D
 
 import globals as g
 import slicer
@@ -31,7 +32,7 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
                 sly.logger.info(f"Geometry type: {figure.volume_object.obj_class.geometry_type}")
                 if figure_vobj_key != volume_object_key:
                     continue
-                if figure.volume_object.obj_class.geometry_type not in (sly.Bitmap, sly.Mask3D):
+                if figure.volume_object.obj_class.geometry_type != sly.Bitmap:
                     figure = convert_to_bitmap(figure)
                 try:
                     slice_geometry = figure.geometry
@@ -189,11 +190,31 @@ def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output
         output_file_name = f"{v_object._key.hex}.nrrd"
         output_save_path = os.path.join(input_dir, output_file_name)
 
-        curr_obj_mask = segment_object(
-            nrrd_header["sizes"], volume_annotation, v_object, key_id_map
-        )
+        if v_object.obj_class._geometry_type == Mask3D:
+            volume_object_key = key_id_map.get_object_id(v_object._key)
+            masks = []
+            for sp_figure in volume_annotation.spatial_figures:
+                figure_vobj_key = key_id_map.get_object_id(sp_figure.volume_object._key)
+                if figure_vobj_key == volume_object_key:
+                    masks.append(sp_figure.geometry.data)
+            if len(masks) > 1:
+                curr_obj_mask = merge_masks(masks)
+            else:
+                curr_obj_mask = masks[0]
+        else:
+            curr_obj_mask = segment_object(
+                nrrd_header["sizes"], volume_annotation, v_object, key_id_map
+            )
         save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
         sly.logger.info(f"{output_file_name} has been successfully saved.")
         return fill_between_slices(
             volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
         )
+
+
+def merge_masks(masks):
+    mask = masks.pop(0)
+    while masks:
+        mask_add = masks.pop(0)
+        mask = np.where(mask != 0, mask, mask_add)
+    return mask
