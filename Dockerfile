@@ -1,4 +1,5 @@
-FROM lassoan/slicer-notebook:5.0.2
+FROM supervisely/3dslicer:1.0.6
 
-RUN /home/sliceruser/Slicer/bin/PythonSlicer -m pip install git+https://github.com/supervisely/supervisely.git@add-bitmap3d-geometry numpy-stl==2.17.1 scikit-video==1.1.11
+COPY requirements.txt /app/requirements.txt
+RUN /home/sliceruser/Slicer/bin/PythonSlicer -m pip install -r /app/requirements.txt
 USER root
