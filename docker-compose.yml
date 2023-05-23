@@ -1,7 +1,7 @@
 version: "2.4"
 services:
   app:
-    image: supervisely/3dslicer:1.0.6
+    image: supervisely/3dslicer:mask_3d
     command: /home/sliceruser/Slicer/Slicer --python-script '/app/src/main.py' --no-splash --no-main-window
     build: .
     env_file: secret_debug.env
