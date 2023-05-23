@@ -16,7 +16,6 @@ logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
 # order matters
 # from dotenv import load_dotenv
-
 # load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
 # load_dotenv(os.path.join(app_root_directory, "debug.env"))
 
