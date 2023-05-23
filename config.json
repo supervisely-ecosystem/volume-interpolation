@@ -1,25 +1,23 @@
 {
-    "name": "Volume Interpolation",
-    "type": "app",
-    "categories": [
-      "dicom",
-      "interpolation",
-      "neural network",
-      "interactive segmentation",
-      "serve"
-    ],
-    "description": "Slicer 3D algorithms for volume interpolation",
-    "docker_image": "supervisely/3dslicer:1.0.6",
-    "entrypoint": "cd /home/sliceruser/ && /home/sliceruser/run.sh /home/sliceruser/Slicer/Slicer --python-script '/app/repo/src/main.py' --no-splash --no-main-window",
-    "main_script": "src/main.py",
-    "task_location": "application_sessions",
-    "icon_background": "#FFFFFF",
-    "icon": "https://user-images.githubusercontent.com/48913536/178039949-868e7590-8fe6-4f66-8128-9b6bd7245631.png",
-    "headless": true,
-    "instance_version": "6.4.57",
-    "session_tags": [
-      "sly_interpolation"
-    ],
-    "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
-    "community_agent": false
-  }
+  "name": "Volume Interpolation",
+  "type": "app",
+  "categories": [
+    "dicom",
+    "interpolation",
+    "neural network",
+    "interactive segmentation",
+    "serve"
+  ],
+  "description": "Slicer 3D algorithms for volume interpolation",
+  "docker_image": "supervisely/3dslicer:mask_3d",
+  "entrypoint": "cd /home/sliceruser/ && /home/sliceruser/run.sh /home/sliceruser/Slicer/Slicer --python-script '/app/repo/src/main.py' --no-splash --no-main-window",
+  "main_script": "src/main.py",
+  "task_location": "application_sessions",
+  "icon_background": "#FFFFFF",
+  "icon": "https://user-images.githubusercontent.com/48913536/178039949-868e7590-8fe6-4f66-8128-9b6bd7245631.png",
+  "headless": true,
+  "instance_version": "6.4.57",
+  "session_tags": ["sly_interpolation"],
+  "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
+  "community_agent": false
+}
