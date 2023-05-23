@@ -27,7 +27,6 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
             vol_slice_id = vol_slice.index
             for figure in vol_slice.figures:
                 figure_vobj_key = key_id_map.get_object_id(figure.volume_object._key)
-                sly.logger.info(f"Geometry type: {figure.volume_object.obj_class.geometry_type}")
                 if figure_vobj_key != volume_object_key:
                     continue
                 if figure.volume_object.obj_class.geometry_type != sly.Bitmap:
