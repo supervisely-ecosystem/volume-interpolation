@@ -30,17 +30,12 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
                 sly.logger.info(f"Geometry type: {figure.volume_object.obj_class.geometry_type}")
                 if figure_vobj_key != volume_object_key:
                     continue
-                if figure.volume_object.obj_class.geometry_type not in (sly.Bitmap, sly.Mask3D):
+                if figure.volume_object.obj_class.geometry_type != sly.Bitmap:
                     figure = convert_to_bitmap(figure)
                 try:
                     slice_geometry = figure.geometry
                     slice_bitmap = slice_geometry.data.astype(mask.dtype)
-                    sly.logger.info(f"slice_bitmap: {slice_bitmap}")
-                    if figure.volume_object.obj_class.geometry_type == sly.Mask3D:
-                        bitmap_origin = slice_geometry.space_origin
-                    else:
-                        bitmap_origin = slice_geometry.origin
-                    sly.logger.info(f"bitmap_origin: {bitmap_origin}")
+                    bitmap_origin = slice_geometry.origin
 
                     slice_bitmap = np.fliplr(slice_bitmap)
                     slice_bitmap = np.rot90(slice_bitmap, 1)
@@ -48,7 +43,6 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
                     mask = draw_figure_on_slice(
                         mask, plane, vol_slice_id, slice_bitmap, bitmap_origin
                     )
-                    sly.logger.info(f"mask: {mask}")
                 except Exception as e:
                     sly.logger.warn(
                         f"Skipped {plane} slice: {vol_slice_id} due to error: '{e}'",
@@ -134,52 +128,35 @@ def fill_between_slices(volume_path, mask_path, output_dir):
 
     # Create segment editor to get access to effects
     segmentEditorWidget = slicer.qMRMLSegmentEditorWidget()
-    sly.logger.info(f"!!!!!!!!!!!!!!! segmentEditorWidget PASSED")
     # To show segment editor widget (useful for debugging): segmentEditorWidget.show()
     segmentEditorWidget.setMRMLScene(slicer.mrmlScene)
-    sly.logger.info(f"!!!!!!!!!!!!!!! segmentEditorWidget.setMRMLScene PASSED")
     segmentEditorNode = slicer.vtkMRMLSegmentEditorNode()
-    sly.logger.info(f"!!!!!!!!!!!!!!! segmentEditorNode PASSED")
     slicer.mrmlScene.AddNode(segmentEditorNode)
-    sly.logger.info(f"!!!!!!!!!!!!!!! slicer.mrmlScene.AddNode PASSED")
     segmentEditorWidget.setMRMLSegmentEditorNode(segmentEditorNode)
-    sly.logger.info(f"!!!!!!!!!!!!!!! setMRMLSegmentEditorNode PASSED")
     segmentEditorWidget.setSegmentationNode(segmentationNode)
-    sly.logger.info(f"!!!!!!!!!!!!!!! setSegmentationNode PASSED")
     segmentEditorWidget.setMasterVolumeNode(masterVolumeNode)
-    sly.logger.info(f"!!!!!!!!!!!!!!! setMasterVolumeNode PASSED")
 
     # Run segmentation
     segmentEditorWidget.setActiveEffectByName("Fill between slices")
-    sly.logger.info(f"!!!!!!!!!!!!!!! setActiveEffectByName PASSED")
     effect = segmentEditorWidget.activeEffect()
-    sly.logger.info(f"!!!!!!!!!!!!!!! effect PASSED")
     # You can change parameters by calling: effect.setParameter("MyParameterName", someValue)
     # Most effect don't have onPreview, you can just call onApply
-    sly.logger.info(f"!!!!!!!!!!!!!!! {effect}")
     effect.self().onPreview()
-    sly.logger.info(f"!!!!!!!!!!!!!!! effect.self().onPreview() PASSED")
     effect.self().onApply()
-    sly.logger.info(f"!!!!!!!!!!!!!!! effect.self().onApply() PASSED")
 
     segmentationNode.CreateClosedSurfaceRepresentation()
-    sly.logger.info(f"!!!!!!!!!!!!!!! CreateClosedSurfaceRepresentation PASSED")
     slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(
         output_dir, segmentationNode, None, "STL"
     )
-    sly.logger.info(
-        f"!!!!!!!!!!!!!!! slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles PASSED"
-    )
+
     output_mesh_filename = os.listdir(output_dir)[0]
     output_mesh_path = os.path.join(output_dir, output_mesh_filename)
-    sly.logger.info(f"!!!!!!!!!!!!!!! output_mesh_path: {output_mesh_path}")
 
     stl_mesh = mesh.Mesh.from_file(output_mesh_path)
     stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
     stl_mesh = io.open(output_mesh_path, mode="r", encoding="utf-8").read()
     sly.logger.info(f"Interpolation done: {output_mesh_filename}")
     silent_remove(output_mesh_path)
-    # sly.logger.info(f"{stl_mesh}")
     return stl_mesh
 
 
