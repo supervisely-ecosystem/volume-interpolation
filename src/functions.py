@@ -2,15 +2,13 @@ import io
 import os
 import nrrd
 from stl import mesh
-import globals as g
 import numpy as np
 import supervisely as sly
 from stl import Mode, mesh
-from supervisely.io.fs import get_file_name_with_ext, silent_remove
+from supervisely.io.fs import get_file_name_with_ext, silent_remove, remove_dir
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
-from supervisely import Mask3D
+from supervisely.geometry.mask_3d import PointLocation3D
 
-import globals as g
 import slicer
 
 
@@ -32,13 +30,16 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
                 sly.logger.info(f"Geometry type: {figure.volume_object.obj_class.geometry_type}")
                 if figure_vobj_key != volume_object_key:
                     continue
-                if figure.volume_object.obj_class.geometry_type != sly.Bitmap:
+                if figure.volume_object.obj_class.geometry_type not in (sly.Bitmap, sly.Mask3D):
                     figure = convert_to_bitmap(figure)
                 try:
                     slice_geometry = figure.geometry
                     slice_bitmap = slice_geometry.data.astype(mask.dtype)
                     sly.logger.info(f"slice_bitmap: {slice_bitmap}")
-                    bitmap_origin = slice_geometry.origin
+                    if figure.volume_object.obj_class.geometry_type == sly.Mask3D:
+                        bitmap_origin = slice_geometry.space_origin
+                    else:
+                        bitmap_origin = slice_geometry.origin
                     sly.logger.info(f"bitmap_origin: {bitmap_origin}")
 
                     slice_bitmap = np.fliplr(slice_bitmap)
@@ -133,36 +134,52 @@ def fill_between_slices(volume_path, mask_path, output_dir):
 
     # Create segment editor to get access to effects
     segmentEditorWidget = slicer.qMRMLSegmentEditorWidget()
+    sly.logger.info(f"!!!!!!!!!!!!!!! segmentEditorWidget PASSED")
     # To show segment editor widget (useful for debugging): segmentEditorWidget.show()
     segmentEditorWidget.setMRMLScene(slicer.mrmlScene)
+    sly.logger.info(f"!!!!!!!!!!!!!!! segmentEditorWidget.setMRMLScene PASSED")
     segmentEditorNode = slicer.vtkMRMLSegmentEditorNode()
+    sly.logger.info(f"!!!!!!!!!!!!!!! segmentEditorNode PASSED")
     slicer.mrmlScene.AddNode(segmentEditorNode)
+    sly.logger.info(f"!!!!!!!!!!!!!!! slicer.mrmlScene.AddNode PASSED")
     segmentEditorWidget.setMRMLSegmentEditorNode(segmentEditorNode)
+    sly.logger.info(f"!!!!!!!!!!!!!!! setMRMLSegmentEditorNode PASSED")
     segmentEditorWidget.setSegmentationNode(segmentationNode)
+    sly.logger.info(f"!!!!!!!!!!!!!!! setSegmentationNode PASSED")
     segmentEditorWidget.setMasterVolumeNode(masterVolumeNode)
+    sly.logger.info(f"!!!!!!!!!!!!!!! setMasterVolumeNode PASSED")
 
     # Run segmentation
     segmentEditorWidget.setActiveEffectByName("Fill between slices")
+    sly.logger.info(f"!!!!!!!!!!!!!!! setActiveEffectByName PASSED")
     effect = segmentEditorWidget.activeEffect()
+    sly.logger.info(f"!!!!!!!!!!!!!!! effect PASSED")
     # You can change parameters by calling: effect.setParameter("MyParameterName", someValue)
     # Most effect don't have onPreview, you can just call onApply
+    sly.logger.info(f"!!!!!!!!!!!!!!! {effect}")
     effect.self().onPreview()
+    sly.logger.info(f"!!!!!!!!!!!!!!! effect.self().onPreview() PASSED")
     effect.self().onApply()
+    sly.logger.info(f"!!!!!!!!!!!!!!! effect.self().onApply() PASSED")
 
     segmentationNode.CreateClosedSurfaceRepresentation()
+    sly.logger.info(f"!!!!!!!!!!!!!!! CreateClosedSurfaceRepresentation PASSED")
     slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(
         output_dir, segmentationNode, None, "STL"
     )
-
+    sly.logger.info(
+        f"!!!!!!!!!!!!!!! slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles PASSED"
+    )
     output_mesh_filename = os.listdir(output_dir)[0]
     output_mesh_path = os.path.join(output_dir, output_mesh_filename)
+    sly.logger.info(f"!!!!!!!!!!!!!!! output_mesh_path: {output_mesh_path}")
 
     stl_mesh = mesh.Mesh.from_file(output_mesh_path)
     stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
     stl_mesh = io.open(output_mesh_path, mode="r", encoding="utf-8").read()
     sly.logger.info(f"Interpolation done: {output_mesh_filename}")
     silent_remove(output_mesh_path)
-
+    # sly.logger.info(f"{stl_mesh}")
     return stl_mesh
 
 
@@ -178,6 +195,24 @@ def download_volume(api, project_id, volume_id, input_dir):
     volume_annotation = sly.VolumeAnnotation.from_json(
         data=volume_annotation_json, project_meta=project_meta, key_id_map=key_id_map
     )
+
+    for sf in volume_annotation.spatial_figures:
+        if sf.geometry.geometry_name() == "mask_3d":
+            figure_id = key_id_map.get_figure_id(sf.key())
+            figure_path = "{}_mask3d/".format(volume_path[:-5]) + f"{figure_id}.nrrd"
+            api.volume.figure.download_stl_meshes([figure_id], [figure_path])
+            mask3d_data, mask3d_header = nrrd.read(figure_path)
+            sf.geometry.data = mask3d_data
+            sf.geometry.space = mask3d_header["space"]
+            sf.geometry.space_origin = PointLocation3D(
+                col=mask3d_header["space origin"][0],
+                row=mask3d_header["space origin"][1],
+                tab=mask3d_header["space origin"][2],
+            )
+            sf.geometry.space_directions = mask3d_header["space directions"]
+            path_without_filename = "/".join(figure_path.split("/")[:-1])
+            remove_dir(path_without_filename)
+
     return volume_path, volume_annotation, key_id_map
 
 
@@ -190,7 +225,7 @@ def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output
         output_file_name = f"{v_object._key.hex}.nrrd"
         output_save_path = os.path.join(input_dir, output_file_name)
 
-        if v_object.obj_class._geometry_type == Mask3D:
+        if v_object.obj_class._geometry_type == sly.Mask3D:
             volume_object_key = key_id_map.get_object_id(v_object._key)
             masks = []
             for sp_figure in volume_annotation.spatial_figures:
