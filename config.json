@@ -9,7 +9,7 @@
     "serve"
   ],
   "description": "Slicer 3D algorithms for volume interpolation",
-  "docker_image": "supervisely/3dslicer:mask_3d",
+  "docker_image": "ganpoweird/private:latest",
   "entrypoint": "cd /home/sliceruser/ && /home/sliceruser/run.sh /home/sliceruser/Slicer/Slicer --python-script '/app/repo/src/main.py' --no-splash --no-main-window",
   "main_script": "src/main.py",
   "task_location": "application_sessions",
