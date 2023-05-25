@@ -5,9 +5,10 @@ from stl import mesh
 import numpy as np
 import supervisely as sly
 from stl import Mode, mesh
-from supervisely.io.fs import get_file_name_with_ext, silent_remove, remove_dir
+from supervisely.io.fs import get_file_name_with_ext, silent_remove
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
-from supervisely.geometry.mask_3d import PointLocation3D
+from supervisely.geometry.mask_3d import Mask3D
+from supervisely.project.volume_project import load_figure_data
 
 import slicer
 
@@ -173,21 +174,8 @@ def download_volume(api, project_id, volume_id, input_dir):
     )
 
     for sf in volume_annotation.spatial_figures:
-        if sf.geometry.geometry_name() == "mask_3d":
-            figure_id = key_id_map.get_figure_id(sf.key())
-            figure_path = "{}_mask3d/".format(volume_path[:-5]) + f"{figure_id}.nrrd"
-            api.volume.figure.download_stl_meshes([figure_id], [figure_path])
-            mask3d_data, mask3d_header = nrrd.read(figure_path)
-            sf.geometry.data = mask3d_data
-            sf.geometry.space = mask3d_header["space"]
-            sf.geometry.space_origin = PointLocation3D(
-                col=mask3d_header["space origin"][0],
-                row=mask3d_header["space origin"][1],
-                tab=mask3d_header["space origin"][2],
-            )
-            sf.geometry.space_directions = mask3d_header["space directions"]
-            path_without_filename = "/".join(figure_path.split("/")[:-1])
-            remove_dir(path_without_filename)
+        if sf.geometry.name() == Mask3D.name():
+            load_figure_data(api, volume_path, sf, key_id_map)
 
     return volume_path, volume_annotation, key_id_map
 
