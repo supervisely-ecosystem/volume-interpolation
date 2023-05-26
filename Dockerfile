@@ -1,7 +1,7 @@
 FROM lassoan/slicer-notebook:5.0.2 as builder
 
 RUN /home/sliceruser/Slicer/bin/PythonSlicer -m pip install \    
-    argon2_cffi==21.3.0 \
+    argon2-cffi==21.3.0 \
     asttokens==2.2.1 \    
     black==23.3.0 \    
     click==8.1.3 \
@@ -9,16 +9,17 @@ RUN /home/sliceruser/Slicer/bin/PythonSlicer -m pip install \
     executing==1.2.0 \
     ipython==8.13.2 \
     jedi==0.18.2 \
-    matplotlib_inline==0.1.6 \
+    matplotlib-inline==0.1.6 \
     pathspec==0.11.1 \
     platformdirs==3.5.1 \
-    prompt_toolkit==3.0.38 \
+    prompt-toolkit==3.0.38 \
     Pygments==2.15.1 \
     setuptools==67.8.0 \
     stack_data==0.6.2 \
     traitlets==5.9.0 \
+    typing-extensions==4.6.2 \
     wcwidth==0.2.6 \
-    xeus_python_shell==0.5.0
+    xeus-python_shell==0.5.0
 
 FROM lassoan/slicer-notebook:5.0.2
 
@@ -40,6 +41,7 @@ RUN rm -rf /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/pyt
     setuptools, \ 
     stack_data, \ 
     traitlets, \ 
+    typing_extensions.py, \
     wcwidth, \ 
     xeus_python_shell \
     }
@@ -61,6 +63,7 @@ RUN rm -rf /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/pyt
     setuptools-60.9.0.dist-info, \
     stack_data-0.2.0.dist-info, \
     traitlets-5.1.1.dist-info, \
+    typing_extensions-4.1.1.dist-info, \
     wcwidth-0.2.5.dist-info, \
     xeus_python_shell-0.2.0.dist-info \
     }
@@ -82,6 +85,7 @@ COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packag
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/setuptools /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/setuptools
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/stack_data /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/stack_data
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/traitlets /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/traitlets
+COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/typing_extensions.py /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/typing_extensions.py
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/wcwidth /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/wcwidth
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/xeus_python_shell /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/xeus_python_shell
 
@@ -101,6 +105,7 @@ COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packag
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/setuptools-67.8.0.dist-info /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/setuptools-67.8.0.dist-info
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/stack_data-0.6.2.dist-info /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/stack_data-0.6.2.dist-info
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/traitlets-5.9.0.dist-info /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/traitlets-5.9.0.dist-info
+COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/typing_extensions-4.6.2.dist-info /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/typing_extensions-4.6.2.dist-info
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/wcwidth-0.2.6.dist-info /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/wcwidth-0.2.6.dist-info
 COPY --from=builder /home/sliceruser/Slicer/lib/Python/lib/python3.9/site-packages/xeus_python_shell-0.5.0.dist-info /home/sliceruser/Slicer/NA-MIC/Extensions-30607/SlicerJupyter/lib/python3.9/site-packages/xeus_python_shell-0.5.0.dist-info
 
