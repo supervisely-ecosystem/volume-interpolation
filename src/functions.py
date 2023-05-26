@@ -151,10 +151,11 @@ def fill_between_slices(volume_path, mask_path, output_dir):
 
     output_nrrd_filename = os.listdir(output_dir)[0]
     output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
-    nrrd_tuple = nrrd.read(output_nrrd_path)
+    with open(output_nrrd_path, "rb") as file:
+        nrrd_bytestring = file.read()
     sly.logger.info(f"Interpolation done: {output_nrrd_filename}")
     silent_remove(output_nrrd_path)
-    return nrrd_tuple
+    return nrrd_bytestring
 
 
 def download_volume(api, project_id, volume_id, input_dir):
