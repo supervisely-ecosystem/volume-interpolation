@@ -153,6 +153,7 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
     with open(output_nrrd_path, "rb") as file:
         nrrd_bytestring = file.read()
+        nrrd_bytestring = f"{nrrd_bytestring}"
     sly.logger.info(f"Interpolation done: {output_nrrd_filename}")
     silent_remove(output_nrrd_path)
     return nrrd_bytestring
