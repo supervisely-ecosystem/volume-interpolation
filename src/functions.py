@@ -145,19 +145,19 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     effect.self().onApply()
 
     segmentationNode.CreateClosedSurfaceRepresentation()
-    slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsClosedSurfaceRepresentationToFiles(
-        output_dir, segmentationNode, None, "STL"
+    slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsBinaryLabelmapRepresentationToFiles(
+        output_dir, segmentationNode, None, "nrrd", True
     )
 
-    output_mesh_filename = os.listdir(output_dir)[0]
-    output_mesh_path = os.path.join(output_dir, output_mesh_filename)
+    output_nrrd_filename = os.listdir(output_dir)[0]
+    output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
 
-    stl_mesh = mesh.Mesh.from_file(output_mesh_path)
-    stl_mesh.save(output_mesh_path, mode=Mode.ASCII)
-    stl_mesh = io.open(output_mesh_path, mode="r", encoding="utf-8").read()
-    sly.logger.info(f"Interpolation done: {output_mesh_filename}")
-    silent_remove(output_mesh_path)
-    return stl_mesh
+    nrrd_tuple = nrrd.read(output_nrrd_path)
+    # stl_mesh.save(output_nrrd_path, mode=Mode.ASCII)
+    # stl_mesh = io.open(output_nrrd_path, mode="r", encoding="utf-8").read()
+    sly.logger.info(f"Interpolation done: {output_nrrd_filename}")
+    silent_remove(output_nrrd_path)
+    return nrrd_tuple
 
 
 def download_volume(api, project_id, volume_id, input_dir):

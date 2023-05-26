@@ -35,7 +35,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
         volume_id=state["volumeId"],
         input_dir=g.INPUT_DIR,
     )
-    stl_mesh = f.draw_annotation(
+    nrrd_tuple = f.draw_annotation(
         volume_path=volume_path,
         volume_annotation=volume_annotation,
         object_id=state["objectId"],
@@ -47,7 +47,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
     logger.info("Start response")
     g.app.send_response(
         request_id=context["request_id"],
-        data={"interpolatedStl": stl_mesh, "success": True, "error": None},
+        data={"interpolatedStl": nrrd_tuple, "success": True, "error": None},
     )
     logger.info("Finish response")
 
