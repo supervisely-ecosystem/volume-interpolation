@@ -151,10 +151,7 @@ def fill_between_slices(volume_path, mask_path, output_dir):
 
     output_nrrd_filename = os.listdir(output_dir)[0]
     output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
-
     nrrd_tuple = nrrd.read(output_nrrd_path)
-    # stl_mesh.save(output_nrrd_path, mode=Mode.ASCII)
-    # stl_mesh = io.open(output_nrrd_path, mode="r", encoding="utf-8").read()
     sly.logger.info(f"Interpolation done: {output_nrrd_filename}")
     silent_remove(output_nrrd_path)
     return nrrd_tuple
