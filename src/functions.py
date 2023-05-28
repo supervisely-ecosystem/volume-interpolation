@@ -1,10 +1,7 @@
-import io
 import os
 import nrrd
-from stl import mesh
 import numpy as np
 import supervisely as sly
-from stl import Mode, mesh
 from supervisely.io.fs import get_file_name_with_ext, silent_remove
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
 from supervisely.geometry.mask_3d import Mask3D
@@ -15,13 +12,13 @@ import slicer
 
 def segment_object(vol_seg_mask_shape, volume_annotation, volume_object, key_id_map):
     mask = np.zeros(vol_seg_mask_shape).astype(np.bool)
-    mask_2d = segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
-    mask = np.where(mask_2d != 0, mask_2d, mask)
+    mask = segment_2d(mask, volume_annotation, volume_object, key_id_map)
+    mask = segment_3d(mask, volume_annotation, volume_object, key_id_map)
+
     return mask
 
 
-def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape):
-    mask = np.zeros(vol_seg_mask_shape).astype(np.bool)
+def segment_2d(mask, volume_annotation, volume_object, key_id_map):
     volume_object_key = key_id_map.get_object_id(volume_object._key)
     for plane in ["plane_sagittal", "plane_coronal", "plane_axial"]:
         for vol_slice in getattr(volume_annotation, plane):
@@ -30,7 +27,7 @@ def segment_2d(volume_annotation, volume_object, key_id_map, vol_seg_mask_shape)
                 figure_vobj_key = key_id_map.get_object_id(figure.volume_object._key)
                 if figure_vobj_key != volume_object_key:
                     continue
-                if figure.volume_object.obj_class.geometry_type != sly.Bitmap:
+                if not isinstance(figure.geometry, sly.Bitmap):
                     figure = convert_to_bitmap(figure)
                 try:
                     slice_geometry = figure.geometry
@@ -107,6 +104,17 @@ def convert_to_bitmap(figure):
     return figure.clone(volume_object=new_volume_object, geometry=new_geometry)
 
 
+def segment_3d(mask, volume_annotation, volume_object, key_id_map):
+    volume_object_key = key_id_map.get_object_id(volume_object._key)
+    for sp_figure in volume_annotation.spatial_figures:
+        if not isinstance(sp_figure.geometry, sly.Mask3D): continue
+
+        figure_vobj_key = key_id_map.get_object_id(sp_figure.volume_object._key)
+        if figure_vobj_key == volume_object_key:
+            mask = np.where(sp_figure.geometry.data != 0, sp_figure.geometry.data, mask)
+
+    return mask
+
 def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
     nrrd.write(
         output_save_path,
@@ -144,7 +152,8 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     effect.self().onPreview()
     effect.self().onApply()
 
-    segmentationNode.CreateClosedSurfaceRepresentation()
+    segmentationNode.CreateBinaryLabelmapRepresentation()
+    # segmentationNode.CreateClosedSurfaceRepresentation()
     slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsBinaryLabelmapRepresentationToFiles(
         output_dir, segmentationNode, None, "nrrd", True
     )
@@ -187,31 +196,12 @@ def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output
         output_file_name = f"{v_object._key.hex}.nrrd"
         output_save_path = os.path.join(input_dir, output_file_name)
 
-        if v_object.obj_class._geometry_type == sly.Mask3D:
-            volume_object_key = key_id_map.get_object_id(v_object._key)
-            masks = []
-            for sp_figure in volume_annotation.spatial_figures:
-                figure_vobj_key = key_id_map.get_object_id(sp_figure.volume_object._key)
-                if figure_vobj_key == volume_object_key:
-                    masks.append(sp_figure.geometry.data)
-            if len(masks) > 1:
-                curr_obj_mask = merge_masks(masks)
-            else:
-                curr_obj_mask = masks[0]
-        else:
-            curr_obj_mask = segment_object(
-                nrrd_header["sizes"], volume_annotation, v_object, key_id_map
-            )
+        curr_obj_mask = segment_object(
+            nrrd_header["sizes"], volume_annotation, v_object, key_id_map
+        )
+
         save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
         sly.logger.info(f"{output_file_name} has been successfully saved.")
         return fill_between_slices(
             volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
         )
-
-
-def merge_masks(masks):
-    mask = masks.pop(0)
-    while masks:
-        mask_add = masks.pop(0)
-        mask = np.where(mask != 0, mask, mask_add)
-    return mask
