@@ -9,7 +9,7 @@
     "serve"
   ],
   "description": "Slicer 3D algorithms for volume interpolation",
-  "docker_image": "supervisely/base-py-sdk:6.72.26",
+  "docker_image": "supervisely/base-py-sdk:6.72.28",
   "main_script": "src/main.py",
   "task_location": "application_sessions",
   "icon_background": "#FFFFFF",
