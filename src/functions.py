@@ -1,5 +1,6 @@
 import os
 import time
+import itk
 import nrrd
 import numpy as np
 import supervisely as sly
@@ -231,6 +232,29 @@ def fill_between_slices(volume_path, mask_path, output_dir):
     return nrrd_bytes
 
 
+def make_interpolation(mask_path, output_dir):
+    sly.logger.info(f"Start interpolation for {mask_path}")
+    start = time.time()
+    image = itk.imread(mask_path, itk.UC)
+    end = time.time()
+    sly.logger.debug(f"#1 Time spent on imread(): {end - start}")
+    start = time.time()
+    filled = itk.morphological_contour_interpolator(image)
+    end = time.time()
+    sly.logger.debug(f"#2 Time spent on morphological_contour_interpolator(): {end - start}")
+    start = time.time()
+    itk.imwrite(filled, output_dir + "/interpolation.nrrd", compression=True)
+    end = time.time()
+    sly.logger.debug(f"#3 Time spent on imwrite(): {end - start}")
+    output_nrrd_filename = os.listdir(output_dir)[0]
+    output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
+    with open(output_nrrd_path, "rb") as file:
+        nrrd_bytes = file.read()
+    sly.logger.info(f"Interpolation done: {output_nrrd_filename}")
+    silent_remove(output_nrrd_path)
+    return nrrd_bytes
+
+
 def download_volume(api, project_id, volume_id, input_dir):
     project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
     key_id_map = KeyIdMap()
@@ -266,6 +290,7 @@ def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output
 
         save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
         sly.logger.info(f"{output_file_name} has been successfully saved.")
-        return fill_between_slices(
-            volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
-        )
+        # return fill_between_slices(
+        #     volume_path=volume_path, mask_path=output_save_path, output_dir=output_dir
+        # )
+        return make_interpolation(mask_path=output_save_path, output_dir=output_dir)
