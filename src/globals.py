@@ -1,23 +1,14 @@
 import os
-import sys
-from pathlib import Path
 
 import supervisely as sly
 from supervisely.app.v1.app_service import AppService
 from supervisely.io.fs import mkdir
-from supervisely.sly_logger import logger
+from dotenv import load_dotenv
 
 
-app_root_directory = str(Path(__file__).parent.absolute().parents[0])
-logger.info(f"App root directory: {app_root_directory}")
-sys.path.append(app_root_directory)
-sys.path.append(os.path.join(app_root_directory, "src"))
-logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
-
-# order matters
-# from dotenv import load_dotenv
-# load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
-# load_dotenv(os.path.join(app_root_directory, "debug.env"))
+if sly.is_development():
+    load_dotenv("debug.env")
+    load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 app = AppService()
 api = sly.Api.from_env()
@@ -28,6 +19,8 @@ WORKSPACE_ID = int(os.environ["context.workspaceId"])
 
 INPUT_DIR = "input"
 OUTPUT_DIR = "output"
+# LOGS = "logs"
 
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
+# mkdir(LOGS, True)

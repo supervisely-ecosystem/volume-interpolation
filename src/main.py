@@ -63,7 +63,7 @@ def main():
         extra={"context.teamId": g.TEAM_ID, "context.workspaceId": g.WORKSPACE_ID},
     )
 
-    add_default_logging_into_file(logger, log_dir=g.app_root_directory)
+    # add_default_logging_into_file(logger, log_dir=g.LOGS)
     logger.info("🟩 App has been successfully deployed")
     g.app.run()
 
