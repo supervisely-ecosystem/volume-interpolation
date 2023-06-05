@@ -1,4 +1,5 @@
 import os
+import time
 import nrrd
 import numpy as np
 import supervisely as sly
@@ -107,13 +108,15 @@ def convert_to_bitmap(figure):
 def segment_3d(mask, volume_annotation, volume_object, key_id_map):
     volume_object_key = key_id_map.get_object_id(volume_object._key)
     for sp_figure in volume_annotation.spatial_figures:
-        if not isinstance(sp_figure.geometry, sly.Mask3D): continue
+        if not isinstance(sp_figure.geometry, sly.Mask3D):
+            continue
 
         figure_vobj_key = key_id_map.get_object_id(sp_figure.volume_object._key)
         if figure_vobj_key == volume_object_key:
             mask = np.where(sp_figure.geometry.data != 0, sp_figure.geometry.data, mask)
 
     return mask
+
 
 def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
     nrrd.write(
@@ -131,32 +134,92 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 def fill_between_slices(volume_path, mask_path, output_dir):
     sly.logger.info(f"Start interpolation for {mask_path}")
+    start_time = time.time()
     masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})
-    segmentationNode = slicer.util.loadSegmentation(mask_path)
+    end_time = time.time()
+    sly.logger.debug(f"Time for masterVolumeNode: {end_time - start_time}")
 
+    start_time = time.time()
+    segmentationNode = slicer.util.loadSegmentation(mask_path)
+    end_time = time.time()
+    sly.logger.debug(f"Time for segmentationNode: {end_time - start_time}")
+
+    start_time = time.time()
     # Create segment editor to get access to effects
     segmentEditorWidget = slicer.qMRMLSegmentEditorWidget()
+    end_time = time.time()
+    sly.logger.debug(f"Time for segmentEditorWidget: {end_time - start_time}")
+
+    start_time = time.time()
     # To show segment editor widget (useful for debugging): segmentEditorWidget.show()
     segmentEditorWidget.setMRMLScene(slicer.mrmlScene)
-    segmentEditorNode = slicer.vtkMRMLSegmentEditorNode()
-    slicer.mrmlScene.AddNode(segmentEditorNode)
-    segmentEditorWidget.setMRMLSegmentEditorNode(segmentEditorNode)
-    segmentEditorWidget.setSegmentationNode(segmentationNode)
-    segmentEditorWidget.setMasterVolumeNode(masterVolumeNode)
+    end_time = time.time()
+    sly.logger.debug(f"Time for setMRMLScene: {end_time - start_time}")
 
+    start_time = time.time()
+    segmentEditorNode = slicer.vtkMRMLSegmentEditorNode()
+    end_time = time.time()
+    sly.logger.debug(f"Time for vtkMRMLSegmentEditorNode: {end_time - start_time}")
+
+    start_time = time.time()
+    slicer.mrmlScene.AddNode(segmentEditorNode)
+    end_time = time.time()
+    sly.logger.debug(f"Time for AddNode(segmentEditorNode): {end_time - start_time}")
+
+    start_time = time.time()
+    segmentEditorWidget.setMRMLSegmentEditorNode(segmentEditorNode)
+    end_time = time.time()
+    sly.logger.debug(
+        f"Time for setMRMLSegmentEditorNode(segmentEditorNode): {end_time - start_time}"
+    )
+
+    start_time = time.time()
+    segmentEditorWidget.setSegmentationNode(segmentationNode)
+    end_time = time.time()
+    sly.logger.debug(f"Time for setSegmentationNode(segmentationNode): {end_time - start_time}")
+
+    start_time = time.time()
+    segmentEditorWidget.setMasterVolumeNode(masterVolumeNode)
+    end_time = time.time()
+    sly.logger.debug(f"Time for setMasterVolumeNode(masterVolumeNode): {end_time - start_time}")
+
+    start_time = time.time()
     # Run segmentation
     segmentEditorWidget.setActiveEffectByName("Fill between slices")
+    end_time = time.time()
+    sly.logger.debug(
+        f"Time for setActiveEffectByName(Fill between slices): {end_time - start_time}"
+    )
+
+    start_time = time.time()
     effect = segmentEditorWidget.activeEffect()
+    end_time = time.time()
+    sly.logger.debug(f"Time for segmentEditorWidget.activeEffect(): {end_time - start_time}")
+
+    start_time = time.time()
     # You can change parameters by calling: effect.setParameter("MyParameterName", someValue)
     # Most effect don't have onPreview, you can just call onApply
     effect.self().onPreview()
-    effect.self().onApply()
+    end_time = time.time()
+    sly.logger.debug(f"Time for onPreview(): {end_time - start_time}")
 
+    start_time = time.time()
+    effect.self().onApply()
+    end_time = time.time()
+    sly.logger.debug(f"Time for onApply(): {end_time - start_time}")
+
+    start_time = time.time()
     segmentationNode.CreateBinaryLabelmapRepresentation()
+    end_time = time.time()
+    sly.logger.debug(f"Time for CreateBinaryLabelmapRepresentation(): {end_time - start_time}")
+
+    start_time = time.time()
     # segmentationNode.CreateClosedSurfaceRepresentation()
     slicer.vtkSlicerSegmentationsModuleLogic.ExportSegmentsBinaryLabelmapRepresentationToFiles(
         output_dir, segmentationNode, None, "nrrd", True
     )
+    end_time = time.time()
+    sly.logger.debug(f"Time for EXPORT: {end_time - start_time}")
 
     output_nrrd_filename = os.listdir(output_dir)[0]
     output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
