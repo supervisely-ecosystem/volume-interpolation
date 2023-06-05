@@ -133,6 +133,7 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 
 def fill_between_slices(volume_path, mask_path, output_dir):
+    sly.add_default_logging_into_file(sly.logger, "/sly-app-data")
     sly.logger.info(f"Start interpolation for {mask_path}")
     start_time = time.time()
     masterVolumeNode = slicer.util.loadVolume(volume_path, {"singleFile": True})
