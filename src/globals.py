@@ -26,9 +26,8 @@ TASK_ID = int(os.environ["TASK_ID"])
 TEAM_ID = int(os.environ["context.teamId"])
 WORKSPACE_ID = int(os.environ["context.workspaceId"])
 
-STORAGE_DIR = "/home/sliceruser"
-INPUT_DIR = os.path.join(STORAGE_DIR, "input")
-OUTPUT_DIR = os.path.join(STORAGE_DIR, "output")
+INPUT_DIR = "input"
+OUTPUT_DIR = "output"
 
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
