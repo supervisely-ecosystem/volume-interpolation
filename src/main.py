@@ -1,7 +1,6 @@
 import functools
 
 import supervisely as sly
-from supervisely.sly_logger import add_default_logging_into_file, logger
 from supervisely.worker_proto import worker_api_pb2 as api_proto
 from supervisely.worker_api.agent_rpc import send_from_memory_generator
 
@@ -47,14 +46,14 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
         key_id_map=key_id_map,
     )
 
-    logger.info("Start response")
+    sly.logger.info("Start response")
     g.app.api.put_stream_with_data(
         "SendGeneralEventData",
         api_proto.Empty,
         send_from_memory_generator(nrrd_bytes, 1048576),
         addit_headers={"x-request-id": context["request_id"]},
     )
-    logger.info("Finish response")
+    sly.logger.info("Finish response")
 
 
 def main():
@@ -63,8 +62,7 @@ def main():
         extra={"context.teamId": g.TEAM_ID, "context.workspaceId": g.WORKSPACE_ID},
     )
 
-    # add_default_logging_into_file(logger, log_dir=g.LOGS)
-    logger.info("🟩 App has been successfully deployed")
+    sly.logger.info("🟩 App has been successfully deployed")
     g.app.run()
 
 
