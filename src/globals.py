@@ -19,8 +19,6 @@ WORKSPACE_ID = int(os.environ["context.workspaceId"])
 
 INPUT_DIR = "input"
 OUTPUT_DIR = "output"
-# LOGS = "logs"
 
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
-# mkdir(LOGS, True)
