@@ -9,6 +9,10 @@
     "serve"
   ],
   "description": "Slicer 3D algorithms for volume interpolation",
+  "license": {
+    "type": "Apache-2.0",
+    "url": ""
+  },
   "docker_image": "supervisely/base-py-sdk:6.72.28",
   "main_script": "src/main.py",
   "entrypoint": "python src/main.py",
@@ -16,7 +20,7 @@
   "icon_background": "#FFFFFF",
   "icon": "https://user-images.githubusercontent.com/48913536/178039949-868e7590-8fe6-4f66-8128-9b6bd7245631.png",
   "headless": true,
-  "instance_version": "6.4.57",
+  "min_instance_version": "6.7.41",
   "session_tags": ["sly_interpolation"],
   "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
   "community_agent": false
