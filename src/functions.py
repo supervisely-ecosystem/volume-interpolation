@@ -131,25 +131,43 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
     )
 
 
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        sly.logger.debug(f"Time spent on {func.__name__}: {round(execution_time, 2)} second(s).")
+        return result
+
+    return wrapper
+
+
+@measure_time
+def load_image(mask_path):
+    return itk.imread(mask_path, itk.UC)
+
+
+@measure_time
+def interpolate(image):
+    return itk.morphological_contour_interpolator(image)
+
+
+@measure_time
+def save_nrrd(interpolation, output_dir):
+    return itk.imwrite(interpolation, output_dir + "/interpolation.nrrd", compression=True)
+
+
 def make_interpolation(mask_path, output_dir):
     sly.logger.info(f"Start interpolation for {mask_path}")
-    start = time.time()
-    image = itk.imread(mask_path, itk.UC)
-    end = time.time()
-    sly.logger.debug(f"#1 Time spent on imread(): {end - start}")
-    start = time.time()
-    filled = itk.morphological_contour_interpolator(image)
-    end = time.time()
-    sly.logger.debug(f"#2 Time spent on morphological_contour_interpolator(): {end - start}")
-    start = time.time()
-    itk.imwrite(filled, output_dir + "/interpolation.nrrd", compression=True)
-    end = time.time()
-    sly.logger.debug(f"#3 Time spent on imwrite(): {end - start}")
+    image = load_image(mask_path)
+    interpolation = interpolate(image)
+    save_nrrd(interpolation, output_dir)
     output_nrrd_filename = os.listdir(output_dir)[0]
     output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
     with open(output_nrrd_path, "rb") as file:
         nrrd_bytes = file.read()
-    sly.logger.info(f"Interpolation done: {output_nrrd_filename}")
+    sly.logger.info(f"Finish interpolation!")
     silent_remove(output_nrrd_path)
     return nrrd_bytes
 
