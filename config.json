@@ -21,5 +21,8 @@
       "sly_interpolation"
     ],
     "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
-    "community_agent": false
+    "community_agent": false,
+    "license": {
+        "url": "https://github.com/Slicer/Slicer/blob/main/License.txt"
+    }
   }
