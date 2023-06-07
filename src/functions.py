@@ -192,9 +192,12 @@ def download_volume(api, project_id, volume_id, input_dir):
         data=volume_annotation_json, project_meta=project_meta, key_id_map=key_id_map
     )
 
+    start = time.time()
     for sf in volume_annotation.spatial_figures:
         if sf.geometry.name() == Mask3D.name():
             load_figure_data(api, volume_path, sf, key_id_map)
+    end = time.time()
+    sly.logger.debug(f"Time spent on spatial figures: {round((end - start), 2)} second(s).")
 
     return volume_path, volume_annotation, key_id_map
 
