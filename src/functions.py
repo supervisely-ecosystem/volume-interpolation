@@ -10,6 +10,19 @@ from supervisely.geometry.mask_3d import Mask3D
 from supervisely.project.volume_project import load_figure_data
 
 
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        sly.logger.debug(f"Time spent on {func.__name__}: {round(execution_time, 2)} second(s).")
+        return result
+
+    return wrapper
+
+
+@measure_time
 def segment_object(vol_seg_mask_shape, volume_annotation, volume_object, key_id_map):
     mask = np.zeros(vol_seg_mask_shape).astype(np.bool)
     mask = segment_2d(mask, volume_annotation, volume_object, key_id_map)
@@ -18,6 +31,7 @@ def segment_object(vol_seg_mask_shape, volume_annotation, volume_object, key_id_
     return mask
 
 
+@measure_time
 def segment_2d(mask, volume_annotation, volume_object, key_id_map):
     volume_object_key = key_id_map.get_object_id(volume_object._key)
     for plane in ["plane_sagittal", "plane_coronal", "plane_axial"]:
@@ -52,6 +66,7 @@ def segment_2d(mask, volume_annotation, volume_object, key_id_map):
     return mask
 
 
+@measure_time
 def draw_figure_on_slice(mask, plane, vol_slice_id, slice_bitmap, bitmap_origin):
     if plane == "plane_sagittal":
         cur_bitmap = mask[
@@ -95,6 +110,7 @@ def draw_figure_on_slice(mask, plane, vol_slice_id, slice_bitmap, bitmap_origin)
     return mask
 
 
+@measure_time
 def convert_to_bitmap(figure):
     obj_class = figure.volume_object.obj_class
     new_obj_class = obj_class.clone(geometry_type=sly.Bitmap)
@@ -104,6 +120,7 @@ def convert_to_bitmap(figure):
     return figure.clone(volume_object=new_volume_object, geometry=new_geometry)
 
 
+@measure_time
 def segment_3d(mask, volume_annotation, volume_object, key_id_map):
     volume_object_key = key_id_map.get_object_id(volume_object._key)
     for sp_figure in volume_annotation.spatial_figures:
@@ -117,6 +134,7 @@ def segment_3d(mask, volume_annotation, volume_object, key_id_map):
     return mask
 
 
+@measure_time
 def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
     nrrd.write(
         output_save_path,
@@ -129,18 +147,6 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
         },
         compression_level=1,
     )
-
-
-def measure_time(func):
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        execution_time = end_time - start_time
-        sly.logger.debug(f"Time spent on {func.__name__}: {round(execution_time, 2)} second(s).")
-        return result
-
-    return wrapper
 
 
 @measure_time
@@ -172,6 +178,7 @@ def make_interpolation(mask_path, output_dir):
     return nrrd_bytes
 
 
+@measure_time
 def download_volume(api, project_id, volume_id, input_dir):
     project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
     key_id_map = KeyIdMap()
@@ -192,6 +199,7 @@ def download_volume(api, project_id, volume_id, input_dir):
     return volume_path, volume_annotation, key_id_map
 
 
+@measure_time
 def draw_annotation(volume_path, volume_annotation, object_id, input_dir, output_dir, key_id_map):
     nrrd_header = nrrd.read_header(volume_path)
     sly.logger.info("Draw mask from annotation")
