@@ -8,7 +8,7 @@
     "interactive segmentation",
     "serve"
   ],
-  "description": "Slicer 3D algorithms for volume interpolation",
+  "description": "ITK algorithms for volume interpolation",
   "license": {
     "type": "Apache-2.0",
     "url": ""
@@ -18,10 +18,10 @@
   "entrypoint": "python src/main.py",
   "task_location": "application_sessions",
   "icon_background": "#FFFFFF",
-  "icon": "https://user-images.githubusercontent.com/48913536/178039949-868e7590-8fe6-4f66-8128-9b6bd7245631.png",
+  "icon": "https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/bb744d13-cbf7-44bb-a3a4-b9fac101ef54",
   "headless": true,
   "min_instance_version": "6.7.41",
   "session_tags": ["sly_interpolation"],
-  "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
+  "poster": "https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/af1b9e46-9096-4060-b895-687fb4286951",
   "community_agent": false
 }
