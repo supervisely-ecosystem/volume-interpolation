@@ -7,8 +7,7 @@ import json
 import nrrd
 import uuid
 from pathlib import Path
-from supervisely.worker_proto import worker_api_pb2 as api_proto
-from supervisely.worker_api.agent_rpc import send_from_memory_generator
+from supervisely.io.fs import silent_remove
 
 work_directory = str(Path(__file__).absolute().parents[0]) + "/"
 
@@ -36,7 +35,7 @@ def prepare_data():
 
 @f.measure_time
 def heat_it_up():
-    sly.logger.info("Start heating up the app")
+    sly.logger.info("🔥 Start heating up the app")
     jsons = prepare_data()
     key_id_map = sly.KeyIdMap.load_json(work_directory + json_file_paths[2])
     meta = sly.ProjectMeta.from_json(jsons.get("meta"))
@@ -49,3 +48,6 @@ def heat_it_up():
     curr_obj_mask = f.segment_object(nrrd_header["sizes"], volume_annotation, v_object, key_id_map)
     f.save_nrrd_mask(nrrd_header, curr_obj_mask.astype(np.short), output_save_path)
     nrrd_bytes = f.make_interpolation(mask_path=output_save_path, output_dir=g.OUTPUT_DIR)
+    silent_remove(output_save_path)
+    g.heated = True
+    sly.logger.info("💡 App is ready to deploy")
