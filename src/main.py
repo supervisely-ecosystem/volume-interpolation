@@ -7,6 +7,8 @@ from supervisely.worker_api.agent_rpc import send_from_memory_generator
 import functions as f
 import globals as g
 
+from heat_it_app.heat_it_up import heat_it_up
+
 
 def send_error_data(func):
     @functools.wraps(func)
@@ -57,6 +59,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
 
 
 def main():
+    heat_it_up()
     sly.logger.info(
         "Script arguments",
         extra={"context.teamId": g.TEAM_ID, "context.workspaceId": g.WORKSPACE_ID},
