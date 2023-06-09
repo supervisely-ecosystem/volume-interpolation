@@ -8,6 +8,7 @@ from supervisely.io.fs import get_file_name_with_ext, silent_remove
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
 from supervisely.geometry.mask_3d import Mask3D
 from supervisely.project.volume_project import load_figure_data
+from globals import heated
 
 
 def measure_time(func):
@@ -169,7 +170,10 @@ def save_nrrd(interpolation, output_dir):
 
 
 def make_interpolation(mask_path, output_dir):
-    sly.logger.info(f"Start interpolation for {mask_path}")
+    if heated:
+        sly.logger.info(f"Start interpolation for {mask_path}")
+    else:
+        sly.logger.debug(f"Start heating interpolation for {mask_path}")
     image = load_image(mask_path)
     interpolation = interpolate(image)
     save_nrrd(interpolation, output_dir)
@@ -177,7 +181,11 @@ def make_interpolation(mask_path, output_dir):
     output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
     with open(output_nrrd_path, "rb") as file:
         nrrd_bytes = file.read()
-    sly.logger.info(f"Finish interpolation!")
+    if heated:
+        sly.logger.info(f"Finish interpolation!")
+    else:
+        sly.logger.debug(f"Finish heating interpolation!")
+
     silent_remove(output_nrrd_path)
     return nrrd_bytes
 
