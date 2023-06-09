@@ -22,3 +22,5 @@ OUTPUT_DIR = "output"
 
 mkdir(INPUT_DIR, True)
 mkdir(OUTPUT_DIR, True)
+
+heated = False
