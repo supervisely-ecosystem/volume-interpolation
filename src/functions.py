@@ -129,8 +129,12 @@ def segment_3d(mask, volume_annotation, volume_object, key_id_map):
 
         figure_vobj_key = key_id_map.get_object_id(sp_figure.volume_object._key)
         if figure_vobj_key == volume_object_key:
+            start = time.time()
             mask = np.where(sp_figure.geometry.data != 0, sp_figure.geometry.data, mask)
-
+            end = time.time()
+            sly.logger.debug(
+                f"Time spent on segment_3d np.where: {round((end - start), 2)} second(s)."
+            )
     return mask
 
 
@@ -179,15 +183,21 @@ def make_interpolation(mask_path, output_dir):
 
 
 @measure_time
-def download_volume(api, project_id, volume_id, input_dir):
+def download_volume(api: sly.Api, project_id, volume_id, input_dir):
     project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
     key_id_map = KeyIdMap()
     volume_info = api.volume.get_info_by_id(id=volume_id)
     volume_path = os.path.join(input_dir, volume_info.name)
     if not os.path.exists(volume_path):
         sly.logger.info(f"Downloading volume {get_file_name_with_ext(volume_path)}")
+        start = time.time()
         api.volume.download_path(id=volume_id, path=volume_path, progress_cb=None)
+        end = time.time()
+        sly.logger.debug(f"Time spent on download_path: {round((end - start), 2)} second(s).")
+    start = time.time()
     volume_annotation_json = api.volume.annotation.download(volume_id=volume_id)
+    end = time.time()
+    sly.logger.debug(f"Time spent on annotation.download: {round((end - start), 2)} second(s).")
     volume_annotation = sly.VolumeAnnotation.from_json(
         data=volume_annotation_json, project_meta=project_meta, key_id_map=key_id_map
     )
