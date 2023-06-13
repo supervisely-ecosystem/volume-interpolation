@@ -20,7 +20,7 @@
 
 # Overview
 
-The Volume Interpolation app uses an [ITK-based implementation](https://github.com/KitwareMedical/ITKMorphologicalContourInterpolation) of morphological contour interpolation that is based on a method proposed by Albu et al. in 2008. Interpolation is done by first determining correspondence between shapes on adjacent segmented slices by detecting overlaps, then aligning the corresponding shapes, generating a transition sequence of one-pixel dilations, and taking the median as result.
+The Volume Interpolation app uses an [ITK-based implementation](https://github.com/KitwareMedical/ITKMorphologicalContourInterpolation) of morphological contour interpolation that is based on a method proposed by Albu et al. in 2008. Interpolation is done by first determining correspondence between shapes on adjacent segmented slices by detecting overlaps, then aligning the corresponding shapes, generating a transition sequence of one-pixel dilations, and taking the median as a result.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/48913536/178044045-9d785179-5b72-4b84-9bdb-00f16478e5af.gif" style="width:80%;"/>
@@ -31,7 +31,7 @@ The Volume Interpolation app uses an [ITK-based implementation](https://github.c
 ### ⚠️ Notice
 
 - The application may already be launched by the instance administrator (**Enterprise**) or the Supervisely team (**Community**). If the app is not available in the dropdown menu for selecting interpolation in the DICOM volume labeling tool, please contact your instance administrator. If the app responds slowly, please run additional application sessions in your team.
-- **Enterprise only**: You can share a started application with all users on your instance using **share** button in front of a running session. We recommend running multiple sessions if a large number of users are using the app simultaneously.
+- **Enterprise only**: You can share a started application with all users on your instance using the **share** button in front of a running session. We recommend running multiple sessions if a large number of users are using the app simultaneously.
 
 ---
 
@@ -51,10 +51,10 @@ The Volume Interpolation app uses an [ITK-based implementation](https://github.c
 
 # How To Use
 
-1. Select segmented object
-2. Select interpolator (one time operation)
+1. Select interpolator (one-time operation)
+2. Select segmented object
 3. Press `Interpolate` button
-4. Wait for the app to process slices, when interpolation is created, you will see it in figures of the selected object
+4. Wait for the app to process slices, when interpolation is created, you will see it in the figures of the selected object. Press `APPLY` to save the result or `CANCEL` to make edits.
 
 **Controls:**
 
@@ -62,9 +62,11 @@ The Volume Interpolation app uses an [ITK-based implementation](https://github.c
 | ---------------------------- | ------------------- |
 | <kbd>Ctrl</kbd>+<kbd>I</kbd> | Apply interpolation |
 
-<img src="https://user-images.githubusercontent.com/48913536/178040004-e38d9422-a799-474a-8892-b5780c2c2f34.png"/>
 
-<img src="https://user-images.githubusercontent.com/48913536/178044073-0ddfa65a-5451-4252-8457-5c00c7e2c203.gif"/>
+<img width="1280" alt="2023-06-13_15-54-32" src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/9adedecd-54fc-4639-b588-bb0f1cfceab4">
+
+
+<img width="1280" src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/43d4c40e-c688-4f03-bd9b-ed93f80cbe92"/>
 
 # Acknowledgment
 
