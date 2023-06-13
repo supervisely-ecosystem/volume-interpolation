@@ -37,17 +37,17 @@ The Volume Interpolation app uses an [ITK-based implementation](https://github.c
 
 1. Run the app from the Ecosystem or **App Sessions** page
 
-<img src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/a64ad2e3-7a04-4f76-9aed-a6f109d01a9d"/>
+<img width="1280" alt="2023-06-13_18-02-00" src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/70675d98-279b-45ae-af92-0bfb8684a4f0">
 
 2. Press the **Run** button in the modal window
 
-<div align="center" markdown>
-<img src="https://user-images.githubusercontent.com/48913536/178040333-94926f78-bef6-4a3f-8a56-d62d66cbfb62.png" width="650"/>
+<div align="left" markdown>
+<img width="403" alt="2023-06-13_18-04-14" src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/b32c126d-205c-4f6b-9440-a24cd0801c99">
 </div>
 
 3. Wait for the app to deploy
 
-<img src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/be30836b-6739-42bb-ad18-c89db64376bc"/>
+<img width="1280" alt="2023-06-13_18-00-18" src="https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/20af364a-555e-40fc-8e5f-78699c0f8901">
 
 # How To Use
 
