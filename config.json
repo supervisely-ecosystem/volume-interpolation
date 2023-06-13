@@ -1,28 +1,27 @@
 {
-    "name": "Volume Interpolation",
-    "type": "app",
-    "categories": [
-      "dicom",
-      "interpolation",
-      "neural network",
-      "interactive segmentation",
-      "serve"
-    ],
-    "description": "Slicer 3D algorithms for volume interpolation",
-    "docker_image": "supervisely/3dslicer:1.0.6",
-    "entrypoint": "cd /home/sliceruser/ && /home/sliceruser/run.sh /home/sliceruser/Slicer/Slicer --python-script '/app/repo/src/main.py' --no-splash --no-main-window",
-    "main_script": "src/main.py",
-    "task_location": "application_sessions",
-    "icon_background": "#FFFFFF",
-    "icon": "https://user-images.githubusercontent.com/48913536/178039949-868e7590-8fe6-4f66-8128-9b6bd7245631.png",
-    "headless": true,
-    "instance_version": "6.4.57",
-    "session_tags": [
-      "sly_interpolation"
-    ],
-    "poster": "https://user-images.githubusercontent.com/48913536/178039963-3d46e749-8200-4594-b3b5-8b85a5a5f774.png",
-    "community_agent": false,
-    "license": {
-        "url": "https://github.com/Slicer/Slicer/blob/main/License.txt"
-    }
-  }
+  "name": "Volume Interpolation",
+  "type": "app",
+  "categories": [
+    "dicom",
+    "interpolation",
+    "neural network",
+    "interactive segmentation",
+    "serve"
+  ],
+  "description": "ITK algorithms for volume interpolation",
+  "license": {
+    "type": "Apache-2.0",
+    "url": ""
+  },
+  "docker_image": "supervisely/base-py-sdk:6.72.32",
+  "main_script": "src/main.py",
+  "entrypoint": "python src/main.py",
+  "task_location": "application_sessions",
+  "icon_background": "#FFFFFF",
+  "icon": "https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/bb744d13-cbf7-44bb-a3a4-b9fac101ef54",
+  "headless": true,
+  "instance_version": "6.8.0",
+  "session_tags": ["sly_interpolation"],
+  "poster": "https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/af1b9e46-9096-4060-b895-687fb4286951",
+  "community_agent": false
+}

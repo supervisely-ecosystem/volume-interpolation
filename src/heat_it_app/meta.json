@@ -1,0 +1,14 @@
+{
+    "classes": [        
+        {
+            "title": "Mask 3D",
+            "shape": "mask_3d",
+            "color": "#228910",
+            "geometry_config": {},
+            "id": 745929,
+            "hotkey": ""
+        }
+    ],
+    "tags": [],
+    "projectType": "volumes"
+}
