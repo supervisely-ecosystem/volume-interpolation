@@ -20,7 +20,7 @@
 
 # Overview
 
-The Volume interpolation app uses an [ITK-based implementation](https://github.com/KitwareMedical/ITKMorphologicalContourInterpolation) of morphological contour interpolation that is based on a method proposed by Albu et al. in 2008. Interpolation is done by first determining correspondence between shapes on adjacent segmented slices by detecting overlaps, then aligning the corresponding shapes, generating a transition sequence of one-pixel dilations, and taking the median as result.
+The Volume Interpolation app uses an [ITK-based implementation](https://github.com/KitwareMedical/ITKMorphologicalContourInterpolation) of morphological contour interpolation that is based on a method proposed by Albu et al. in 2008. Interpolation is done by first determining correspondence between shapes on adjacent segmented slices by detecting overlaps, then aligning the corresponding shapes, generating a transition sequence of one-pixel dilations, and taking the median as result.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/48913536/178044045-9d785179-5b72-4b84-9bdb-00f16478e5af.gif" style="width:80%;"/>
