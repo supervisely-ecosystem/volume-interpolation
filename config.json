@@ -13,7 +13,7 @@
     "type": "Apache-2.0",
     "url": ""
   },
-  "docker_image": "supervisely/volume-interpolation:1.0.3",
+  "docker_image": "supervisely/volume-interpolation:1.0.4",
   "main_script": "src/main.py",
   "entrypoint": "python src/main.py",
   "task_location": "application_sessions",

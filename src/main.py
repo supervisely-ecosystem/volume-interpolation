@@ -3,6 +3,7 @@ import functools
 import supervisely as sly
 from supervisely.worker_proto import worker_api_pb2 as api_proto
 from supervisely.worker_api.agent_rpc import send_from_memory_generator
+from supervisely.io.fs import clean_dir
 
 import functions as f
 import globals as g
@@ -56,6 +57,7 @@ def volume_interpolation(api: sly.Api, task_id, context, state, app_logger):
         addit_headers={"x-request-id": context["request_id"]},
     )
     sly.logger.info("Finish response")
+    clean_dir(g.INPUT_DIR)
 
 
 def main():
