@@ -1,6 +1,7 @@
 {
   "name": "Volume Interpolation",
   "type": "app",
+  "version": "2.0.0",
   "categories": [
     "dicom",
     "interpolation",
@@ -13,14 +14,14 @@
     "type": "Apache-2.0",
     "url": ""
   },
-  "docker_image": "supervisely/volume-interpolation:1.0.4",
-  "main_script": "src/main.py",
-  "entrypoint": "python src/main.py",
+  "docker_image": "supervisely/volume-interpolation:1.0.5",
+  "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
+  "port": 8000,
   "task_location": "application_sessions",
   "icon_background": "#FFFFFF",
   "icon": "https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/bb744d13-cbf7-44bb-a3a4-b9fac101ef54",
   "headless": true,
-  "instance_version": "6.8.0",
+  "instance_version": "6.15.2",
   "session_tags": ["sly_interpolation"],
   "poster": "https://github.com/supervisely-ecosystem/volume-interpolation/assets/57998637/af1b9e46-9096-4060-b895-687fb4286951",
   "community_agent": false,

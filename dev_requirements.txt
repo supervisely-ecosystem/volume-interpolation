@@ -1,2 +1,2 @@
-supervisely==6.73.6
+supervisely==6.73.433
 itk-morphologicalcontourinterpolation==1.1.0
