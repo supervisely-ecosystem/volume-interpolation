@@ -14,7 +14,7 @@
 		"type": "Apache-2.0",
 		"url": ""
 	},
-	"docker_image": "supervisely/volume-interpolation:1.0.6",
+	"docker_image": "supervisely/volume-interpolation:1.0.7",
 	"entrypoint": "python src/main.py",
 	"port": 8000,
 	"task_location": "application_sessions",
