@@ -5,7 +5,7 @@ from supervisely.worker_proto import worker_api_pb2 as api_proto
 from supervisely.worker_api.agent_rpc import send_from_memory_generator
 from supervisely.io.fs import clean_dir
 from fastapi.responses import StreamingResponse
-from fastapi import Request
+from fastapi import Request, HTTPException
 
 import src.functions as f
 import src.globals as g
@@ -14,11 +14,6 @@ from src.heat_it_app.heat_it_up import heat_it_up
 
 app = sly.Application()
 server = app.get_server()
-
-
-def create_nrrd_chunks_generator(nrrd_bytes, chunk_size=1048576):
-    for i in range(0, len(nrrd_bytes), chunk_size):
-        yield nrrd_bytes[i : i + chunk_size]
 
 
 @server.post("/interpolate")
@@ -44,13 +39,14 @@ def volume_interpolation(request: Request):
             key_id_map=key_id_map,
         )
 
-        # Создаем генератор чанков
+        # Create chunk generator
         def generator():
-            for chunk in create_nrrd_chunks_generator(nrrd_bytes, 1048576):
-                yield chunk
+            chunk_size = 1048576
+            for i in range(0, len(nrrd_bytes), chunk_size):
+                yield nrrd_bytes[i : i + chunk_size]
 
-        sly.logger.info("Start response")
-        # Возвращаем StreamingResponse для FastAPI
+        sly.logger.info("Start streaming response")
+        # Return StreamingResponse for FastAPI
         response = StreamingResponse(
             generator(),
             media_type="application/octet-stream",
@@ -61,14 +57,14 @@ def volume_interpolation(request: Request):
             },
         )
 
-        sly.logger.info("Finish response")
+        sly.logger.info("Streaming response finished")
         clean_dir(g.INPUT_DIR)
 
         return response
 
     except Exception as e:
         sly.logger.error(f"Error during volume interpolation: {e}")
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 heat_it_up()
