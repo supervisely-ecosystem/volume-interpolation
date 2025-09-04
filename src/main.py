@@ -6,7 +6,7 @@ from fastapi import Request, HTTPException
 import src.functions as f
 import src.globals as g
 
-from heat_it_app.heat_it_up import heat_it_up
+from src.heat_it_app.heat_it_up import heat_it_up
 
 app = sly.Application()
 server = app.get_server()
