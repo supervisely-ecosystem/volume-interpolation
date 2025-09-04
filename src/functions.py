@@ -156,17 +156,33 @@ def save_nrrd_mask(nrrd_header, curr_obj_mask, output_save_path):
 
 @measure_time
 def load_image(mask_path):
-    return itk.imread(mask_path, itk.UC)
+    try:
+        # Ensure single threading for ITK operations
+        itk.MultiThreaderBase.SetGlobalDefaultNumberOfThreads(1)
+        return itk.imread(mask_path, itk.UC)
+    except Exception as e:
+        sly.logger.error(f"Error loading image {mask_path}: {e}")
+        raise
 
 
 @measure_time
 def interpolate(image):
-    return itk.morphological_contour_interpolator(image)
+    try:
+        # Ensure single threading for interpolation
+        itk.MultiThreaderBase.SetGlobalDefaultNumberOfThreads(1)
+        return itk.morphological_contour_interpolator(image)
+    except Exception as e:
+        sly.logger.error(f"Error during morphological interpolation: {e}")
+        raise
 
 
 @measure_time
 def save_nrrd(interpolation, output_dir):
-    return itk.imwrite(interpolation, output_dir + "/interpolation.nrrd", compression=True)
+    try:
+        return itk.imwrite(interpolation, output_dir + "/interpolation.nrrd", compression=True)
+    except Exception as e:
+        sly.logger.error(f"Error saving NRRD file: {e}")
+        raise
 
 
 def make_interpolation(mask_path, output_dir):
@@ -174,20 +190,33 @@ def make_interpolation(mask_path, output_dir):
         sly.logger.info(f"Start interpolation for {mask_path}")
     else:
         sly.logger.debug(f"Start heating interpolation for {mask_path}")
-    image = load_image(mask_path)
-    interpolation = interpolate(image)
-    save_nrrd(interpolation, output_dir)
-    output_nrrd_filename = os.listdir(output_dir)[0]
-    output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
-    with open(output_nrrd_path, "rb") as file:
-        nrrd_bytes = file.read()
-    if heated:
-        sly.logger.info(f"Finish interpolation!")
-    else:
-        sly.logger.debug(f"Finish heating interpolation!")
 
-    silent_remove(output_nrrd_path)
-    return nrrd_bytes
+    try:
+        sly.logger.debug("Loading image with ITK...")
+        image = load_image(mask_path)
+        sly.logger.debug("Image loaded successfully, starting interpolation...")
+
+        interpolation = interpolate(image)
+        sly.logger.debug("Interpolation completed, saving NRRD...")
+
+        save_nrrd(interpolation, output_dir)
+        output_nrrd_filename = os.listdir(output_dir)[0]
+        output_nrrd_path = os.path.join(output_dir, output_nrrd_filename)
+
+        with open(output_nrrd_path, "rb") as file:
+            nrrd_bytes = file.read()
+
+        if heated:
+            sly.logger.info(f"Finish interpolation!")
+        else:
+            sly.logger.debug(f"Finish heating interpolation!")
+
+        silent_remove(output_nrrd_path)
+        return nrrd_bytes
+
+    except Exception as e:
+        sly.logger.error(f"Error during interpolation pipeline: {e}")
+        raise
 
 
 @measure_time
