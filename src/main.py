@@ -3,8 +3,8 @@ from supervisely.io.fs import clean_dir
 from fastapi.responses import StreamingResponse
 from fastapi import Request, HTTPException
 
-import functions as f
-import globals as g
+import src.functions as f
+import src.globals as g
 
 from heat_it_app.heat_it_up import heat_it_up
 

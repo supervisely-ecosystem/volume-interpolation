@@ -8,7 +8,7 @@ from supervisely.io.fs import get_file_name_with_ext, silent_remove
 from supervisely.volume_annotation.volume_annotation import KeyIdMap
 from supervisely.geometry.mask_3d import Mask3D
 from supervisely.project.volume_project import load_figure_data
-from globals import heated
+from src.globals import heated
 
 
 def measure_time(func):
