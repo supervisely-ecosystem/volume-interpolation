@@ -13,8 +13,8 @@ server = app.get_server()
 
 
 @server.post("/interpolate")
-def volume_interpolation(request: Request):
-    req = request.json()
+async def volume_interpolation(request: Request):
+    req = await request.json()
     try:
         state = req["state"]
         context = req.get("context", {})
