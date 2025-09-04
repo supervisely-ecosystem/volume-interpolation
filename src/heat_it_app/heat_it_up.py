@@ -1,8 +1,8 @@
 import os
 import numpy as np
 import supervisely as sly
-import src.functions as f
-import src.globals as g
+import functions as f
+import globals as g
 import json
 import nrrd
 import uuid
