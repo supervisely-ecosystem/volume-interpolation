@@ -1,2 +1,3 @@
-supervisely==6.73.433
-itk-morphologicalcontourinterpolation==1.1.0
+opencv-python-headless==4.8.1.78
+supervisely==6.73.435
+itk-morphologicalcontourinterpolation==2.1.1

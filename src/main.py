@@ -1,16 +1,12 @@
-import functools
-
 import supervisely as sly
-from supervisely.worker_proto import worker_api_pb2 as api_proto
-from supervisely.worker_api.agent_rpc import send_from_memory_generator
 from supervisely.io.fs import clean_dir
 from fastapi.responses import StreamingResponse
 from fastapi import Request, HTTPException
 
-import src.functions as f
-import src.globals as g
+import functions as f
+import globals as g
 
-from src.heat_it_app.heat_it_up import heat_it_up
+from heat_it_app.heat_it_up import heat_it_up
 
 app = sly.Application()
 server = app.get_server()
