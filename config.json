@@ -15,7 +15,7 @@
 		"url": ""
 	},
 	"docker_image": "supervisely/volume-interpolation:1.0.7",
-	"entrypoint": "python src/main.py",
+	"entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
 	"port": 8000,
 	"task_location": "application_sessions",
 	"icon_background": "#FFFFFF",
