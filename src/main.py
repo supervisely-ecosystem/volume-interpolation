@@ -41,7 +41,6 @@ async def volume_interpolation(request: Request):
             for i in range(0, len(nrrd_bytes), chunk_size):
                 yield nrrd_bytes[i : i + chunk_size]
 
-        sly.logger.info("Start streaming response")
         # Return StreamingResponse for FastAPI
         response = StreamingResponse(
             generator(),
@@ -53,7 +52,6 @@ async def volume_interpolation(request: Request):
             },
         )
 
-        sly.logger.info("Streaming response finished")
         clean_dir(g.INPUT_DIR)
 
         return response
