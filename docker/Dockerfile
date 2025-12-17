@@ -19,3 +19,5 @@ RUN pip install --upgrade pip
 COPY dev_requirements.txt /req/dev_requirements.txt
 
 RUN pip install --no-cache-dir --disable-pip-version-check -r /req/dev_requirements.txt
+
+LABEL python_sdk_version="6.73.486"
